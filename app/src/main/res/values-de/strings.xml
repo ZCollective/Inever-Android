@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ich Hab Noch Nie</string>
+    <string name="btn_packs">Fragen Pakete</string>
+    <string name="btn_play">Spielen!</string>
+    <string name="btn_settings">Einstellungen</string>
+    <string name="btn_suggest">Frage Vorschlagen</string>
+    <string name="btn_back">Zurück</string>
+    <string name="btn_next">Nächste</string>
+    <string name="text_game_placeholder">Ich hab noch nie ...</string>
+    <string name="btn_save">Speichern</string>
+    <string name="info_checking_updates">Suche nach Updates...</string>
+    <string name="info_downloading_updates">Lade Updates...</string>
+    <string name="info_storing_updates_to_phone">Speichere auf Handy...</string>
+    <string name="info_up_to_date">Inhalte sind bereits aktuell!</string>
+    <string name="info_update_error">Fehler erhalten. Kann jetzt nicht updaten!</string>
+    <string name="title_settings">Einstellungen</string>
+    <string name="settings_enable_18_plus">Ü18 Inhalte erlauben</string>
+    <string name="settings_enable_content_update">Autmatische Updates erlauben</string>
+    <string name="settings_update_now">Inhalte jetzt updaten!</string>
+    <string name="game_no_questions_left">Sorry, das war die letzte Frage. Nochmal?</string>
+    <string name="btn_game_repeat">Nochmal!</string>
+    <string name="settings_nsfw_only">Nur Ü18 Inhalte verwenden</string>
+    <string name="info_no_questions_available">Keine Fragen verfügbar. Prüfe deine Einstellungen!</string>
+    <string name="proposal_name">Dein Name (Optional)</string>
+    <string name="proposal_send">Senden</string>
+    <string name="proposal_string_hint">Trage deinen Vorschlag hier ein!</string>
+    <string name="info_server_down">Konnte nicht zu Server verbinden</string>
+    <string name="info_proposal_sent_success">Vorschlag wurde an Server übertragen!</string>
+    <string name="info_update_success">Inhalte wurden auf die letze Version aktualisiert!</string>
+</resources>

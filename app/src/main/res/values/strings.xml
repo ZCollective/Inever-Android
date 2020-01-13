@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">I Never</string>
+    <string name="btn_packs">Content Packs</string>
+    <string name="btn_play">Play!</string>
+    <string name="btn_settings">Settings</string>
+    <string name="btn_suggest">Suggest Question</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_save">Save</string>
+    <string name="text_game_placeholder">I never...</string>
+    <string name="info_checking_updates">Checking for Updates...</string>
+    <string name="info_update_error">Recieved an error. Cannot Update right now!</string>
+    <string name="info_up_to_date">Content is already up-to-date!</string>
+    <string name="info_downloading_updates">Downloading Updates...</string>
+    <string name="info_storing_updates_to_phone">Storing Updated Content to phone...</string>
+    <string name="title_settings">Settings</string>
+    <string name="settings_enable_18_plus">Enable NSFW content</string>
+    <string name="settings_enable_content_update">Enable Automatic Updates on Startup</string>
+    <string name="settings_update_now">Update Content Now!</string>
+    <string name="game_no_questions_left">Sorry, that was the last Question. Start over?</string>
+    <string name="btn_game_repeat">Start Over!</string>
+    <string name="settings_nsfw_only">Show NSFW Content Only</string>
+    <string name="info_no_questions_available">Could not find any Questions with your Settings!</string>
+    <string name="proposal_name">Your name (Optional)</string>
+    <string name="proposal_send">Send</string>
+    <string name="proposal_string_hint">Enter your Proposal here!</string>
+    <string name="info_server_down">Could not connect to Server...</string>
+    <string name="info_proposal_sent_success">Proposal was sent to Server!</string>
+    <string name="info_update_success">Content was updates to the latest versions!</string>
+</resources>
