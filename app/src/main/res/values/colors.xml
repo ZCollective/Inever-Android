@@ -9,4 +9,6 @@
     <color name="btn_text">#FFFFFF</color>
     <color name="text_color">#616161</color>
     <color name="background_lighten">#78BDB1</color>
+    <color name="ic_launcher_background">#329E9F</color>
+    <color name="ihnn_logo_background">#26A69A</color>
 </resources>
