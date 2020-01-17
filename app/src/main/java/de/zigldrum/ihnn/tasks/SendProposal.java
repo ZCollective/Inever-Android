@@ -1,6 +1,7 @@
 package de.zigldrum.ihnn.tasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -23,6 +24,7 @@ import de.zigldrum.ihnn.views.ProposeQuestion;
 import retrofit2.Call;
 
 public class SendProposal extends AsyncTask<ProposeQuestion, String, Boolean> {
+    private static final String LOG_TAG = "SendProposal";
     private ProposeQuestion app;
     @Override
     protected Boolean doInBackground(ProposeQuestion... activities) {
@@ -30,16 +32,15 @@ public class SendProposal extends AsyncTask<ProposeQuestion, String, Boolean> {
         try {
             Call<ProposalResponse> request = RequesterService.buildContentService().proposeQuestion(new ProposalRequestBody(app.questionString, app.senderName));
             ProposalResponse pr = request.execute().body();
-            System.out.println("Received Response. Message: Success:" + pr.getSuccess() + " | Error: " + pr.getError());
+            Log.i(LOG_TAG, "Received Response. Message: Success:" + pr.getSuccess() + " | Error: " + pr.getError());
             return new Boolean(pr.getSuccess());
         } catch (ConnectException ce) {
-            System.out.println("Server is down!");
+            Log.w(LOG_TAG, "Server is down!", ce);
             publishProgress(app.getResources().getString(R.string.info_server_down));
             Utils.setMainProgressVisible(app, false);
             return new Boolean(false);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Exception occurred in SendProposal Task!");
+            Log.w(LOG_TAG, "Exception occurred in SendProposal Task!", e);
             return new Boolean(false);
         } finally{
         }

@@ -2,6 +2,7 @@ package de.zigldrum.ihnn.views;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,6 +12,8 @@ import de.zigldrum.ihnn.tasks.SendProposal;
 import de.zigldrum.ihnn.utils.Utils;
 
 public class ProposeQuestion extends AppCompatActivity {
+
+    private static final String LOG_TAG = "ProposeQuestion";
 
     public String questionString;
     public String senderName;
@@ -26,7 +29,7 @@ public class ProposeQuestion extends AppCompatActivity {
     }
 
     public void sendProposal (View v) {
-        System.out.println("Currently a stub!");
+        Log.d(LOG_TAG, "Currently a stub!");
         EditText string = findViewById(R.id.proposal_string);
         EditText sender = findViewById(R.id.proposal_sender);
         questionString = string.getText().toString();

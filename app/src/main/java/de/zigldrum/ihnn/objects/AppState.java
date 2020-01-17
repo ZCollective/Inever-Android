@@ -1,5 +1,7 @@
 package de.zigldrum.ihnn.objects;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,6 +23,7 @@ public class AppState implements Serializable {
 
     private static final long serialVersionUID = 2242379700997586835L;
     private static final String appStateFile = "AppState.db";
+    private static final String LOG_TAG = "AppState";
     public final static String BASE_URL = BuildConfig.DEBUG ? "http://spackenserver.de:11337/" : "http://spackenserver.de:11337/";
 
     private boolean initialized;
@@ -105,12 +108,11 @@ public class AppState implements Serializable {
     public boolean saveState (File baseDir) {
         try (ObjectOutputStream stateOut = new ObjectOutputStream(new FileOutputStream(new File(baseDir, appStateFile)))){
             stateOut.writeObject(this);
-            System.out.println("Successfully stored AppState to: " + baseDir.getAbsolutePath());
-            System.out.println("Other files: " + Arrays.stream(baseDir.listFiles()).map(f -> f.getAbsolutePath()).collect(Collectors.toList()).toString());
+            Log.d(LOG_TAG, "Successfully stored AppState to: " + baseDir.getAbsolutePath());
+            Log.d(LOG_TAG, "Other files: " + Arrays.stream(baseDir.listFiles()).map(f -> f.getAbsolutePath()).collect(Collectors.toList()).toString());
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error when writing AppState!");
+            Log.w(LOG_TAG, "Error when writing AppState!", e);
             return false;
         }
     }
@@ -118,9 +120,9 @@ public class AppState implements Serializable {
     public static AppState loadState(File baseDir) {
         AppState state = null;
         try (ObjectInputStream stateIn = new ObjectInputStream(new FileInputStream(new File(baseDir, appStateFile)))) {
-            System.out.println("Attempting to parse AppState.");
+            Log.d(LOG_TAG, "Attempting to parse AppState.");
             state = (AppState) stateIn.readObject();
-            System.out.println("Successfully read AppState.");
+            Log.d(LOG_TAG, "Successfully read AppState.");
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
@@ -131,16 +133,17 @@ public class AppState implements Serializable {
     }
 
     public static boolean isFirstStart (File baseDir) {
-        System.out.println("Checking if AppState File exists");
-        System.out.println("Files: " + Arrays.stream(baseDir.listFiles()).map(f -> f.getAbsolutePath()).collect(Collectors.toList()).toString());
+        Log.d(LOG_TAG, "Checking if AppState File exists");
+        Log.d(LOG_TAG, "Files: " + Arrays.stream(baseDir.listFiles()).map(f -> f.getAbsolutePath()).collect(Collectors.toList()).toString());
         Optional<File> appFile = Arrays.stream(baseDir.listFiles()).filter(f -> f.getAbsolutePath().endsWith(appStateFile)).findFirst();
         if(appFile.isPresent()) {
-            System.out.println("Found file: " + appFile.get());
-            System.out.print("Permissions: ");
-            if (appFile.get().canRead()) System.out.print("r");
-            if (appFile.get().canWrite()) System.out.print("w");
-            if (appFile.get().canExecute()) System.out.print("x");
-            System.out.print("\n");
+            File actualFile = appFile.get();
+            Log.d(LOG_TAG, "Found file: " + actualFile);
+            String permissions = "Permissions: ";
+            permissions += actualFile.canRead() ? "r/" : "-/";
+            permissions += actualFile.canWrite() ? "w/" : "-/";
+            permissions += actualFile.canExecute() ? "x" : "-";
+            Log.d(LOG_TAG, permissions);
 
             return false;
         } else {

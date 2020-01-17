@@ -3,6 +3,7 @@ package de.zigldrum.ihnn.tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ import retrofit2.Response;
 
 public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
 
+    private static final String LOG_TAG = "CheckForUpdates";
+
     private Home app;
     @Override
     protected Boolean doInBackground(Home... activities) {
@@ -34,26 +37,27 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
         try {
             Call<ContentPackResponse> request = RequesterService.buildContentService().getPacks();
             ContentPackResponse cpr = request.execute().body();
-            System.out.println("Received Response. Message: Success:" + cpr.getSuccess() + " | Error: " + cpr.getError());
+            Log.i(LOG_TAG, "Received Response. Message: Success:" + cpr.getSuccess() + " | Error: " + cpr.getError());
             List<ContentPack> remotePacks = cpr.getMsg();
             if (remotePacks == null) {
-                System.out.println("Got null as message! Not correct!");
+                Log.w(LOG_TAG, "Got null as message! Not correct!");
                 publishProgress(app.getResources().getString(R.string.info_update_error));
                 return new Boolean(false);
             }
-            System.out.println(remotePacks.toString());
+            Log.d(LOG_TAG, remotePacks.toString());
             List<ContentPack> availablePacks = app.state.getPacks();
             List<ContentPack> packsToSet = new ArrayList<>();
             for (ContentPack availablePack : availablePacks) {
                 for (ContentPack remotePack : remotePacks) {
-                    if (BuildConfig.DEBUG)
-                        System.out.println("Available: " + availablePack.toString() + "\n Remote: " + remotePack.toString());
-                    if (BuildConfig.DEBUG)
-                        System.out.println("\n" +
-                                availablePack.getId() + " == " + remotePack.getId() + " equals " + (availablePack.getId().intValue() == remotePack.getId().intValue()));
+                    if (BuildConfig.DEBUG) {
+                        Log.i(LOG_TAG, "Available: " + availablePack.toString());
+                        Log.i(LOG_TAG, "Remote: " + remotePack.toString());
+                        Log.i(LOG_TAG, availablePack.getId() + " == " + remotePack.getId() + " equals " + (availablePack.getId().intValue() == remotePack.getId().intValue()));
+                    }
+
                     if (availablePack.getId().intValue() == remotePack.getId().intValue()) {
                         if (availablePack.getVersion().intValue() >= remotePack.getVersion().intValue()) {
-                            System.out.println("Pack: " + availablePack.getName() + " (ID: " + availablePack.getId() + ") is already available with the same or higher version.");
+                            Log.d(LOG_TAG, "Pack: " + availablePack.getName() + " (ID: " + availablePack.getId() + ") is already available with the same or higher version.");
                             remotePacks.remove(remotePack);
                             packsToSet.add(remotePack);
                         }
@@ -62,13 +66,13 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
                 }
             }
             if (remotePacks.size() == 0) {
-                System.out.println("Updated finished. No new packs found!");
+                Log.i(LOG_TAG, "Updated finished. No new packs found!");
                 Utils.setMainProgressVisible(app, false);
                 publishProgress(app.getResources().getString(R.string.info_up_to_date));
                 return new Boolean(true);
             }
 
-            System.out.println("Found " + remotePacks.size() + " new Packs. Getting Questions now...");
+            Log.i(LOG_TAG, "Found " + remotePacks.size() + " new Packs. Getting Questions now...");
             Utils.setMainProgressProgress(app, false, 5);
             app.runOnUiThread(() -> app.setInfoText(app.getResources().getString(R.string.info_downloading_updates)));
 
@@ -86,7 +90,7 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
                     Call<QuestionResponse> questionRequest = RequesterService.buildContentService().getQuestions(newPack.getId());
                     QuestionResponse qr = questionRequest.execute().body();
                     if(qr.getError()) {
-                        System.out.println("Get Questions for pack: " + newPack.getId() + " with version " + newPack.getVersion() + " Failed.");
+                        Log.w(LOG_TAG, "Get Questions for pack: " + newPack.getId() + " with version " + newPack.getVersion() + " Failed.");
                         break;
                     }
                     List<Question> questions = qr.getMsg();
@@ -94,8 +98,7 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
                     totalProgress += progressInc;
                     Utils.setMainProgressProgress(app, false, totalProgress);
                 } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                    System.out.println("Exception occurred in CheckForUpdates Task!");
+                    Log.w(LOG_TAG, "Exception occurred in CheckForUpdates Task!", ioe);
                 }
             }
             packsToSet.addAll(remotePacks);
@@ -104,21 +107,20 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
             app.state.setQuestions(questionsToSet);
             if (app.state.saveState(app.getFilesDir())){
                 Utils.setMainProgressProgress(app, false, 100);
-                System.out.println("Saved AppState after Updates!");
+                Log.i(LOG_TAG, "Saved AppState after Updates!");
                 publishProgress(app.getResources().getString(R.string.info_update_success));
                 return new Boolean(true);
             } else {
-                System.out.println("Could not save AppState!");
+                Log.w(LOG_TAG, "Could not save AppState!");
                 publishProgress(app.getResources().getString(R.string.info_update_error));
                 return new Boolean(false);
             }
         } catch (ConnectException ce) {
-            System.out.println("Server is down!");
+            Log.w(LOG_TAG, "Server is down!", ce);
             publishProgress(app.getResources().getString(R.string.info_server_down));
             return new Boolean(false);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Exception occurred in CheckForUpdates Task!");
+            Log.w(LOG_TAG, "Exception occurred in CheckForUpdates Task!", e);
             return new Boolean(false);
         } finally{
             Utils.setMainProgressVisible(app, false);

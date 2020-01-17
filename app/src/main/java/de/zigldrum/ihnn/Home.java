@@ -3,6 +3,7 @@ package de.zigldrum.ihnn;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ import static de.zigldrum.ihnn.finals.RequestCodes.SETTINGS_REQUEST_CODE;
 public class Home extends AppCompatActivity {
 
     private final Home homeActivity = this;
+    private static final String LOG_TAG = "Home";
 
     public AppState state;
 
@@ -40,24 +42,24 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        System.out.println("Running Home onCreate...");
+        Log.d(LOG_TAG, "Running Home onCreate...");
 
         Utils.setMainProgressVisible(this, true);
         Utils.setMainProgressProgress(this, true, 0);
         if (AppState.isFirstStart(getFilesDir())) {
-            System.out.println("No AppState! First startup...");
+            Log.i(LOG_TAG, "No AppState! First startup...");
             state = firstStart();
             if (state.isInitialized()) {
-                System.out.println("First Start was successful!");
+                Log.i(LOG_TAG, "First Start was successful!");
             } else {
-                System.out.println("First Start Failed!");
+                Log.w(LOG_TAG, "First Start Failed!");
             }
         } else {
             state = AppState.loadState(getFilesDir());
         }
 
         if (state == null || !state.isInitialized()) {
-            System.out.println("AppState is null or not initialized.");
+            Log.i(LOG_TAG, "AppState is null or not initialized.");
             Utils.showLongToast(getApplicationContext(), "Error at startup. Please wait while we try to fix things...");
             state = firstStart();
             if (state == null) {
@@ -68,7 +70,7 @@ public class Home extends AppCompatActivity {
                 else Utils.setMainProgressVisible(this, false);
             }
         } else {
-            System.out.println("Commencing Normal Startup...");
+            Log.i(LOG_TAG, "Commencing Normal Startup...");
             if (state.getEnableAutoUpdates()) checkForUpdates();
             else Utils.setMainProgressVisible(this, false);
         }
@@ -78,7 +80,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        System.out.println("Resuming Home activity!");
+        Log.i(LOG_TAG, "Resuming Home activity!");
     }
 
     @Override
@@ -86,32 +88,36 @@ public class Home extends AppCompatActivity {
         if (requestCode == SETTINGS_REQUEST_CODE) {
             switch (resultCode) {
                 case SettingsResults.DEFAULT:
-                System.out.println("Received 0 from Settings Activity. Doing nothing.");
+                    Log.d(LOG_TAG, "Received 0 from Settings Activity. Doing nothing.");
                     break;
                 case SettingsResults.STATE_CHANGED:
-                    System.out.println("Received 1 from Settings Activity. Reloading State");
+                    Log.d(LOG_TAG, "Received 1 from Settings Activity. Reloading State");
                     state = AppState.loadState(getFilesDir());
                     break;
                 case SettingsResults.UPDATENOW:
-                    System.out.println("Received 2 from Settings Activity. Triggering Content Update!");
+                    Log.d(LOG_TAG, "Received 2 from Settings Activity. Triggering Content Update!");
                     checkForUpdates();
                     break;
                 case SettingsResults.STATE_AND_UPDATE:
-                    System.out.println("Received 3 from Settings Activity. Reloading state and updating content!");
+                    Log.d(LOG_TAG, "Received 3 from Settings Activity. Reloading state and updating content!");
                     state = AppState.loadState(getFilesDir());
                     checkForUpdates();
-                default: System.out.println("Got undefined result code from Settings!");
-                break;
+                default:
+                    Log.w(LOG_TAG, "Got undefined result code from Settings!");
+                    break;
             }
         } else if (requestCode == CONTENTPACKS_REQUEST_CODE) {
             switch (resultCode) {
-                case ContentPacksResults.DEFAULT: System.out.println("Received 0 from ContentPacks Activity. Doing nothing.");
+                case ContentPacksResults.DEFAULT:
+                    Log.d(LOG_TAG, "Received 0 from ContentPacks Activity. Doing nothing.");
                     break;
-                    case ContentPacksResults.UPDATED: System.out.println("Received 1 from ContentPacks Activity. Updating State");
-                        state = AppState.loadState(getFilesDir());
-                        break;
+                case ContentPacksResults.UPDATED:
+                    Log.d(LOG_TAG, "Received 1 from ContentPacks Activity. Updating State");
+                    state = AppState.loadState(getFilesDir());
+                    break;
                 default:
-                    System.out.println("Got undefined result code from ContentPacks!");
+                    Log.w(LOG_TAG, "Got undefined result code from ContentPacks!");
+                    break;
             }
         }
     }
@@ -133,7 +139,7 @@ public class Home extends AppCompatActivity {
                 ContentPack pack = new ContentPack(id, name, description, keywords, minAge, version);
                 packList.add(pack);
             }
-            System.out.println("Found " + packList.size() + " Packs!");
+            Log.i(LOG_TAG, "Found " + packList.size() + " Packs!");
             state.setPacks(packList);
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
@@ -153,22 +159,19 @@ public class Home extends AppCompatActivity {
                 Question question = new Question(id, string, packID);
                 questionList.add(question);
             }
-            System.out.println("Found " + questionList.size() + " Questions!");
-            state.setQuestions(questionList);
 
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-            return state;
-        } catch (IOException ioe) {
+            Log.i(LOG_TAG, "Found " + questionList.size() + " Questions!");
+            state.setQuestions(questionList);
+        } catch (IOException | CsvValidationException ioe) {
             ioe.printStackTrace();
             return state;
         }
 
         state.setInitialized(true);
         if (state.saveState(getFilesDir())) {
-            System.out.println("Saved State to Disk!");
+            Log.i(LOG_TAG, "Saved State to Disk!");
         } else {
-            System.out.println("Error when saving state!");
+            Log.w(LOG_TAG, "Error when saving state!");
         }
         return state;
     }
@@ -180,9 +183,9 @@ public class Home extends AppCompatActivity {
 
     public void updatesFinished(boolean success){
         if (success) {
-            System.out.println("Updates have finished! Can continue with program as normal.");
+            Log.d(LOG_TAG, "Updates have finished! Can continue with program as normal.");
         } else {
-            System.out.println("There was an error. Maybe handle this in the future?");
+            Log.d(LOG_TAG, "There was an error. Maybe handle this in the future?");
         }
     }
 

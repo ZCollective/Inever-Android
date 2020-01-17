@@ -3,6 +3,7 @@ package de.zigldrum.ihnn.views.contentpacks.view;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +19,8 @@ import static de.zigldrum.ihnn.finals.ContentPacksResults.DEFAULT;
 import static de.zigldrum.ihnn.finals.ContentPacksResults.UPDATED;
 
 public class ContentPacks extends AppCompatActivity {
+
+    private static final String LOG_TAG = "ContentPacks";
 
     private RecyclerView rView;
     private RecyclerView.LayoutManager rLayout;
@@ -53,13 +56,13 @@ public class ContentPacks extends AppCompatActivity {
     public void enablePack(Integer id){
         this.updated = true;
         state.getDisabledPacks().remove(id);
-        System.out.println("Enabling Pack: " + id);
+        Log.d(LOG_TAG, "Enabling Pack: " + id);
     }
 
     public void disablePack(Integer id) {
         this.updated = true;
         state.getDisabledPacks().add(id);
-        System.out.println("Disabling Pack: " + id);
+        Log.d(LOG_TAG, "Disabling Pack: " + id);
     }
 
     @Override

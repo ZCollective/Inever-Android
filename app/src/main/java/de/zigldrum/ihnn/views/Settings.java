@@ -3,6 +3,7 @@ package de.zigldrum.ihnn.views;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 
@@ -16,6 +17,8 @@ import static de.zigldrum.ihnn.finals.SettingsResults.UPDATENOW;
 
 public class Settings extends AppCompatActivity {
 
+    private static final String LOG_TAG = "Settings";
+
     private boolean updateTriggered = false;
     private boolean stateUpdated = false;
 
@@ -24,8 +27,8 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        System.out.println("Settings was created!");
-        System.out.println("Message: " + getIntent().getStringExtra("msg"));
+        Log.i(LOG_TAG, "Settings was created!");
+        Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
         state = AppState.loadState(getFilesDir());
         Switch nsfwSwtich = findViewById(R.id.settings_nsfw);
         nsfwSwtich.setChecked(state.getEnableNSFW());
@@ -42,7 +45,7 @@ public class Settings extends AppCompatActivity {
             state.setEnableNSFW(newValue);
             stateUpdated = true;
         }
-        System.out.println("NSFW is " + (nsfwSwitch.isChecked() ? "enabled" : "disabled"));
+        Log.i(LOG_TAG, "NSFW is " + (nsfwSwitch.isChecked() ? "enabled" : "disabled"));
     }
 
     public void toggleAutoUpdate(View v) {
@@ -52,7 +55,7 @@ public class Settings extends AppCompatActivity {
             state.setEnableAutoUpdates(newValue);
             stateUpdated = true;
         }
-        System.out.println("Autoupdates are " + (autoUpdateSwitch.isChecked() ? "enabled" : "disabled"));
+        Log.i(LOG_TAG, "Autoupdates are " + (autoUpdateSwitch.isChecked() ? "enabled" : "disabled"));
     }
 
     public void toggleNSFWOnlyMode(View v){
@@ -62,7 +65,7 @@ public class Settings extends AppCompatActivity {
             state.setOnlyNSFW(newValue);
             stateUpdated = true;
         }
-        System.out.println("NSFW Only mode is " + (nsfwOnlySwitch.isChecked() ? "enabled" : "disabled"));
+        Log.i(LOG_TAG, "NSFW Only mode is " + (nsfwOnlySwitch.isChecked() ? "enabled" : "disabled"));
     }
 
     public void updateNow (View v) {
@@ -71,7 +74,7 @@ public class Settings extends AppCompatActivity {
     }
 
     public void goBack (View v) {
-        System.out.println("K, thx bai!");
+        Log.i(LOG_TAG, "K, thx bai!");
         this.finish();
     }
 
