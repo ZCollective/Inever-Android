@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn-play"
+        app:layout_constraintTop_toBottomOf="@id/btn-play"
         app:layout_constraintVertical_bias="0.13" />
 
     <Button
@@ -64,7 +64,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn-packs" />
+        app:layout_constraintTop_toBottomOf="@id/btn-packs" />
 
     <Button
         android:id="@+id/btn-settings"
@@ -81,7 +81,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn-suggest" />
+        app:layout_constraintTop_toBottomOf="@id/btn-suggest" />
 
     <ProgressBar
         android:id="@+id/main-progress"
@@ -100,10 +100,10 @@
         android:scaleY="1"
         android:scrollbarFadeDuration="1200"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btn-settings"
+        app:layout_constraintEnd_toEndOf="@id/btn-settings"
         app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="@+id/btn-settings"
-        app:layout_constraintTop_toBottomOf="@+id/progress_info"
+        app:layout_constraintStart_toStartOf="@id/btn-settings"
+        app:layout_constraintTop_toBottomOf="@id/progress_info"
         app:layout_constraintVertical_bias="0.050000012" />
 
     <TextView
@@ -112,8 +112,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textColor="@color/text_color"
-        app:layout_constraintEnd_toEndOf="@+id/btn-settings"
-        app:layout_constraintStart_toStartOf="@+id/btn-settings"
-        app:layout_constraintTop_toBottomOf="@+id/btn-settings" />
+        app:layout_constraintEnd_toEndOf="@id/btn-settings"
+        app:layout_constraintStart_toStartOf="@id/btn-settings"
+        app:layout_constraintTop_toBottomOf="@id/btn-settings" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

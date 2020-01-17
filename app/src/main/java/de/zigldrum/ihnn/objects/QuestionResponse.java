@@ -6,16 +6,20 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class QuestionResponse {
+
+    private final static long serialVersionUID = -7943671069202319658L;
+
     @SerializedName("success")
     @Expose
     private Boolean success;
+
     @SerializedName("error")
     @Expose
     private Boolean error;
+
     @SerializedName("msg")
     @Expose
     private List<Question> msg = null;
-    private final static long serialVersionUID = -7943671069202319658L;
 
     public Boolean getSuccess() {
         return success;

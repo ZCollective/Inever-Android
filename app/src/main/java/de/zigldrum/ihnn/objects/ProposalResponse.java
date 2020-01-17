@@ -3,19 +3,21 @@ package de.zigldrum.ihnn.objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class ProposalResponse {
+
+    private final static long serialVersionUID = -7943671069202319658L;
+
     @SerializedName("success")
     @Expose
     private Boolean success;
+
     @SerializedName("error")
     @Expose
     private Boolean error;
+
     @SerializedName("msg")
     @Expose
     private String msg;
-    private final static long serialVersionUID = -7943671069202319658L;
 
     public Boolean getSuccess() {
         return success;

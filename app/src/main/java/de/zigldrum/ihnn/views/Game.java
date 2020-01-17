@@ -1,11 +1,12 @@
 package de.zigldrum.ihnn.views;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Game extends AppCompatActivity {
         Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
         state = AppState.loadState(getFilesDir());
         questions = getAndFilterQuestions();
-        if(questions.isEmpty()) {
+        if (questions.isEmpty()) {
             Utils.showLongToast(getApplicationContext(), getResources().getString(R.string.info_no_questions_available));
             finish();
         }
@@ -46,8 +47,8 @@ public class Game extends AppCompatActivity {
     public void showNext(View v) {
         Log.d(LOG_TAG, "Getting next Question!");
         TextView questionDisplay = findViewById(R.id.question_text);
-        if(questions.isEmpty()) {
-            if(!shownRepeatOption) {
+        if (questions.isEmpty()) {
+            if (!shownRepeatOption) {
                 questionDisplay.setText(R.string.game_no_questions_left);
                 Button nextButton = findViewById(R.id.btn_game_next);
                 nextButton.setText(R.string.btn_game_repeat);
@@ -73,12 +74,12 @@ public class Game extends AppCompatActivity {
 
     private List<Question> getAndFilterQuestions() {
         List<ContentPack> enabledPacks = state.getPacks().stream().filter(p -> !state.getDisabledPacks().contains(p.getId())).collect(Collectors.toList());
-        if (state.isOnlyNSFW()){
+        if (state.isOnlyNSFW()) {
             Log.d(LOG_TAG, "Ignoring other age settings. NSFWOnly mode overrides!");
             List<Integer> nsfwPackIDs = enabledPacks.stream().filter(p -> p.getMinAge() >= NSFW_BORDER).map(p -> p.getId()).collect(Collectors.toList());
             List<Question> nsfwQuestions = state.getQuestions().parallelStream().filter(q -> nsfwPackIDs.contains(q.getPackid())).collect(Collectors.toList());
             return nsfwQuestions;
-        } else if (state.getEnableNSFW()){
+        } else if (state.getEnableNSFW()) {
             List<Question> questions = new ArrayList<>();
             List<Integer> enabledPackIDs = enabledPacks.stream().map(p -> p.getId()).collect(Collectors.toList());
             List<Question> filtered = state.getQuestions().parallelStream().filter(q -> enabledPackIDs.contains(q.getPackid())).collect(Collectors.toList());

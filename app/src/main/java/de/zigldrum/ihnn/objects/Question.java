@@ -12,18 +12,19 @@ public class Question implements Serializable {
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("string")
     @Expose
     private String string;
+
     @SerializedName("packid")
     @Expose
     private Integer packid;
 
-    public Question () {
-
+    public Question() {
     }
 
-    public Question (int id, String string, int packid) {
+    public Question(int id, String string, int packid) {
         this.id = id;
         this.string = string;
         this.packid = packid;
@@ -52,12 +53,11 @@ public class Question implements Serializable {
     public void setPackid(Integer packid) {
         this.packid = packid;
     }
+
     @Override
-    public boolean equals (Object o) {
-        if(o.getClass().equals(this.getClass())){
-            if(((Question) o).getId() == this.getId()){
-                return true;
-            }
+    public boolean equals(Object o) {
+        if (o.getClass().equals(this.getClass())) {
+            return ((Question) o).getId() == this.getId();
         }
         return false;
     }

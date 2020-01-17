@@ -1,13 +1,15 @@
 package de.zigldrum.ihnn;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.opencsv.CSVReaderHeaderAware;
+import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,10 +18,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import de.zigldrum.ihnn.finals.ContentPacksResults;
+import de.zigldrum.ihnn.finals.SettingsResults;
 import de.zigldrum.ihnn.objects.AppState;
 import de.zigldrum.ihnn.objects.ContentPack;
 import de.zigldrum.ihnn.objects.Question;
-import de.zigldrum.ihnn.finals.SettingsResults;
 import de.zigldrum.ihnn.tasks.CheckForUpdates;
 import de.zigldrum.ihnn.utils.Utils;
 import de.zigldrum.ihnn.views.Game;
@@ -32,8 +34,9 @@ import static de.zigldrum.ihnn.finals.RequestCodes.SETTINGS_REQUEST_CODE;
 
 public class Home extends AppCompatActivity {
 
-    private final Home homeActivity = this;
     private static final String LOG_TAG = "Home";
+
+    private final Home homeActivity = this;
 
     public AppState state;
 
@@ -78,13 +81,14 @@ public class Home extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "Resuming Home activity!");
     }
 
     @Override
-    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETTINGS_REQUEST_CODE) {
             switch (resultCode) {
                 case SettingsResults.DEFAULT:
@@ -181,7 +185,7 @@ public class Home extends AppCompatActivity {
         checkForUpdatesTask.execute(homeActivity);
     }
 
-    public void updatesFinished(boolean success){
+    public void updatesFinished(boolean success) {
         if (success) {
             Log.d(LOG_TAG, "Updates have finished! Can continue with program as normal.");
         } else {
@@ -190,11 +194,11 @@ public class Home extends AppCompatActivity {
     }
 
     public void setInfoText(String message) {
-        TextView info = (TextView) findViewById(R.id.progress_info);
+        TextView info = findViewById(R.id.progress_info);
         info.setText(message);
     }
 
-    public void startGame(View view){
+    public void startGame(View view) {
         Intent intent = new Intent(this, Game.class);
         String message = "Have fun!";
         intent.putExtra("msg", message);

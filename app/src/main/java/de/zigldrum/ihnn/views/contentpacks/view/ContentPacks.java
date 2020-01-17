@@ -1,17 +1,15 @@
 package de.zigldrum.ihnn.views.contentpacks.view;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.finals.ContentPacksResults;
 import de.zigldrum.ihnn.objects.AppState;
 import de.zigldrum.ihnn.views.contentpacks.objects.ContentPacksAdapter;
 

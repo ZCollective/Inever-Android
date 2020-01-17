@@ -1,10 +1,7 @@
 package de.zigldrum.ihnn.tasks;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -22,14 +19,13 @@ import de.zigldrum.ihnn.objects.QuestionResponse;
 import de.zigldrum.ihnn.services.RequesterService;
 import de.zigldrum.ihnn.utils.Utils;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
 
     private static final String LOG_TAG = "CheckForUpdates";
 
     private Home app;
+
     @Override
     protected Boolean doInBackground(Home... activities) {
         app = activities[0];
@@ -84,12 +80,12 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
                     .collect(Collectors.toList());
 
             int totalProgress = 5;
-            int progressInc = (90/remotePacks.size());
-            for(ContentPack newPack : remotePacks) {
+            int progressInc = (90 / remotePacks.size());
+            for (ContentPack newPack : remotePacks) {
                 try {
                     Call<QuestionResponse> questionRequest = RequesterService.buildContentService().getQuestions(newPack.getId());
                     QuestionResponse qr = questionRequest.execute().body();
-                    if(qr.getError()) {
+                    if (qr.getError()) {
                         Log.w(LOG_TAG, "Get Questions for pack: " + newPack.getId() + " with version " + newPack.getVersion() + " Failed.");
                         break;
                     }
@@ -105,7 +101,7 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
             app.runOnUiThread(() -> app.setInfoText(app.getResources().getString(R.string.info_storing_updates_to_phone)));
             app.state.setPacks(packsToSet);
             app.state.setQuestions(questionsToSet);
-            if (app.state.saveState(app.getFilesDir())){
+            if (app.state.saveState(app.getFilesDir())) {
                 Utils.setMainProgressProgress(app, false, 100);
                 Log.i(LOG_TAG, "Saved AppState after Updates!");
                 publishProgress(app.getResources().getString(R.string.info_update_success));
@@ -122,19 +118,19 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
         } catch (Exception e) {
             Log.w(LOG_TAG, "Exception occurred in CheckForUpdates Task!", e);
             return new Boolean(false);
-        } finally{
+        } finally {
             Utils.setMainProgressVisible(app, false);
             app.runOnUiThread(() -> app.setInfoText(""));
         }
     }
+
     @Override
     protected void onPostExecute(Boolean result) {
-
         app.updatesFinished(result.booleanValue());
     }
 
     @Override
-    protected void onProgressUpdate(String... messages){
+    protected void onProgressUpdate(String... messages) {
         Utils.showLongToast(app.getApplicationContext(), messages[0]);
     }
 

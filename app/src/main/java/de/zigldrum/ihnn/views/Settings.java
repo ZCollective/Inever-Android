@@ -1,11 +1,12 @@
 package de.zigldrum.ihnn.views;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.objects.AppState;

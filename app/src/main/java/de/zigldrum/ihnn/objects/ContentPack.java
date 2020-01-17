@@ -5,33 +5,38 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class ContentPack implements Serializable{
+public class ContentPack implements Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("keywords")
     @Expose
     private String keywords;
+
     @SerializedName("min_age")
     @Expose
     private Integer minAge;
+
     @SerializedName("version")
     @Expose
     private Integer version;
-    private final static long serialVersionUID = 1L;
 
-
-    public ContentPack () {
-
+    public ContentPack() {
     }
-    public ContentPack (int id, String name, String description, String keywords, int minAge, int version){
+
+    public ContentPack(int id, String name, String description, String keywords, int minAge, int version) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -89,7 +94,7 @@ public class ContentPack implements Serializable{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("\n------------------------------------------\n");
         builder.append("ID: " + id + "\n");

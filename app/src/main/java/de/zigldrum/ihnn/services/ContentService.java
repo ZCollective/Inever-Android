@@ -1,11 +1,9 @@
 package de.zigldrum.ihnn.services;
 
-import de.zigldrum.ihnn.objects.ContentPack;
 import de.zigldrum.ihnn.objects.ContentPackResponse;
 import de.zigldrum.ihnn.objects.ProposalRequestBody;
 import de.zigldrum.ihnn.objects.ProposalResponse;
 import de.zigldrum.ihnn.objects.QuestionResponse;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -24,7 +22,7 @@ public interface ContentService {
     Call<QuestionResponse> getQuestions(@Path("packid") int packID);
 
     @Headers({"Origin: ihnn-app",
-    "Content-Type: application/json"})
+            "Content-Type: application/json"})
     @POST("v1/public/content/questionProposal")
     Call<ProposalResponse> proposeQuestion(@Body ProposalRequestBody body);
 

@@ -1,14 +1,13 @@
 package de.zigldrum.ihnn.views.contentpacks.objects;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.objects.AppState;
 import de.zigldrum.ihnn.views.contentpacks.view.ContentPacks;
 
 public class ContentPacksViewHolder extends RecyclerView.ViewHolder {
@@ -32,7 +31,5 @@ public class ContentPacksViewHolder extends RecyclerView.ViewHolder {
             else app.disablePack(Integer.valueOf(id.getText().toString()));
         });
     }
-
-
 }
 

@@ -7,16 +7,19 @@ import java.util.List;
 
 public class ContentPackResponse {
 
+    private final static long serialVersionUID = -7943671069202319658L;
+
     @SerializedName("success")
     @Expose
     private Boolean success;
+
     @SerializedName("error")
     @Expose
     private Boolean error;
+
     @SerializedName("msg")
     @Expose
     private List<ContentPack> msg = null;
-    private final static long serialVersionUID = -7943671069202319658L;
 
     public Boolean getSuccess() {
         return success;

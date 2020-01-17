@@ -10,21 +10,21 @@ public class ContentPackWithQuestions extends ContentPack implements Serializabl
 
     private List<Question> questions;
 
-    public ContentPackWithQuestions(int id, String name, String description, String keywords, int minAge, int version, List<Question> possibleQuestions){
+    public ContentPackWithQuestions(int id, String name, String description, String keywords, int minAge, int version, List<Question> possibleQuestions) {
         super(id, name, description, keywords, minAge, version);
         questions = new ArrayList<>();
         possibleQuestions.stream().filter(q -> q.getPackid() == id).forEach(q -> questions.add(q));
     }
 
-    public boolean hasQuestions () {
+    public boolean hasQuestions() {
         return !questions.isEmpty();
     }
 
-    public List<Question> getQuestions () {
+    public List<Question> getQuestions() {
         return questions;
     }
 
-    public void refreshQuestions (List<Question> newQuestions) {
+    public void refreshQuestions(List<Question> newQuestions) {
         newQuestions.stream().filter(q -> (q.getPackid() == getId() && (!questions.contains(q)))).forEach(q -> questions.add(q));
     }
 }
