@@ -20,10 +20,6 @@ public class ContentPacks extends AppCompatActivity {
 
     private static final String LOG_TAG = "ContentPacks";
 
-    private RecyclerView rView;
-    private RecyclerView.LayoutManager rLayout;
-    private RecyclerView.Adapter rAdapter;
-
     public AppState state;
 
     private boolean updated = false;
@@ -32,18 +28,20 @@ public class ContentPacks extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_packs);
+
         state = AppState.loadState(getFilesDir());
-        rView = findViewById(R.id.packs_list_view);
+
+        RecyclerView rView = findViewById(R.id.packs_list_view);
 
         // Performance improvement
         rView.setHasFixedSize(true);
 
         // Using linear layout
-        rLayout = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager rLayout = new LinearLayoutManager(this);
         rView.setLayoutManager(rLayout);
 
         // Setting adapter class
-        rAdapter = new ContentPacksAdapter(state.getPacks(), this);
+        RecyclerView.Adapter rAdapter = new ContentPacksAdapter(state.getPacks(), this);
         rView.setAdapter(rAdapter);
     }
 
@@ -51,7 +49,7 @@ public class ContentPacks extends AppCompatActivity {
         finish();
     }
 
-    public void enablePack(Integer id){
+    public void enablePack(Integer id) {
         this.updated = true;
         state.getDisabledPacks().remove(id);
         Log.d(LOG_TAG, "Enabling Pack: " + id);
