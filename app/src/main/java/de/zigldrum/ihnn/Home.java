@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvValidationException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
-import de.zigldrum.ihnn.tasks.CheckForUpdates;
+import de.zigldrum.ihnn.networking.tasks.CheckForUpdates;
 import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Constants.ContentPacksResults;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
@@ -28,13 +28,14 @@ import de.zigldrum.ihnn.utils.Utils;
 import static de.zigldrum.ihnn.utils.Constants.RequestCodes.CONTENTPACKS_REQUEST_CODE;
 import static de.zigldrum.ihnn.utils.Constants.RequestCodes.SETTINGS_REQUEST_CODE;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMethods {
 
     private static final String LOG_TAG = "Home";
 
-    private final Home homeActivity = this;
-
     public AppState state;
+
+    private TextView info;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,8 @@ public class Home extends AppCompatActivity {
         Log.d(LOG_TAG, "Running Home onCreate...");
 
         Utils.setMainProgressVisible(this, true);
-        Utils.setMainProgressProgress(this, true, 0);
+        setMainProgressProgress(true, 0);
+
         if (AppState.isFirstStart(getFilesDir())) {
             Log.i(LOG_TAG, "No AppState! First startup...");
             state = firstStart();
@@ -63,17 +65,26 @@ public class Home extends AppCompatActivity {
             state = firstStart();
             if (state == null) {
                 Utils.showLongToast(getApplicationContext(), "Could not fix the problem. Please contact the dev!");
+                return;
             } else {
                 Utils.showShortToast(getApplicationContext(), "Commencing normal startup now!");
-                if (state.getEnableAutoUpdates()) checkForUpdates();
-                else Utils.setMainProgressVisible(this, false);
             }
-        } else {
-            Log.i(LOG_TAG, "Commencing Normal Startup...");
-            if (state.getEnableAutoUpdates()) checkForUpdates();
-            else Utils.setMainProgressVisible(this, false);
         }
 
+        Log.i(LOG_TAG, "Commencing Normal Startup...");
+
+        if (state.getEnableAutoUpdates()) {
+            checkForUpdates();
+        } else {
+            Utils.setMainProgressVisible(this, false);
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        info = findViewById(R.id.progress_info);
+        progressBar = findViewById(R.id.main_progress);
     }
 
     @Override
@@ -82,43 +93,58 @@ public class Home extends AppCompatActivity {
         Log.i(LOG_TAG, "Resuming Home activity!");
     }
 
+    private void evalSettingsRequest(int resultCode) {
+        switch (resultCode) {
+            case SettingsResults.DEFAULT:
+                Log.d(LOG_TAG, "Got 0 from Settings -> Doing nothing.");
+                break;
+            case SettingsResults.STATE_CHANGED:
+                Log.d(LOG_TAG, "Got 1 from Settings -> Reloading State");
+                state = AppState.loadState(getFilesDir());
+                break;
+            case SettingsResults.UPDATENOW:
+                Log.d(LOG_TAG, "Got 2 from Settings -> Triggering Content Update!");
+                checkForUpdates();
+                break;
+            case SettingsResults.STATE_AND_UPDATE:
+                Log.d(LOG_TAG, "Got 3 from Settings -> Reloading state & updating content!");
+                state = AppState.loadState(getFilesDir());
+                checkForUpdates();
+            default:
+                Log.w(LOG_TAG, "Got undefined result-code from Settings!");
+                break;
+        }
+    }
+
+    private void evalContentpacksRequest(int resultCode) {
+        switch (resultCode) {
+            case ContentPacksResults.DEFAULT:
+                Log.d(LOG_TAG, "Received 0 from ContentPacks Activity. Doing nothing.");
+                break;
+            case ContentPacksResults.UPDATED:
+                Log.d(LOG_TAG, "Received 1 from ContentPacks Activity. Updating State");
+                state = AppState.loadState(getFilesDir());
+                break;
+            default:
+                Log.w(LOG_TAG, "Got undefined result code from ContentPacks!");
+                break;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SETTINGS_REQUEST_CODE) {
-            switch (resultCode) {
-                case SettingsResults.DEFAULT:
-                    Log.d(LOG_TAG, "Received 0 from Settings Activity. Doing nothing.");
-                    break;
-                case SettingsResults.STATE_CHANGED:
-                    Log.d(LOG_TAG, "Received 1 from Settings Activity. Reloading State");
-                    state = AppState.loadState(getFilesDir());
-                    break;
-                case SettingsResults.UPDATENOW:
-                    Log.d(LOG_TAG, "Received 2 from Settings Activity. Triggering Content Update!");
-                    checkForUpdates();
-                    break;
-                case SettingsResults.STATE_AND_UPDATE:
-                    Log.d(LOG_TAG, "Received 3 from Settings Activity. Reloading state and updating content!");
-                    state = AppState.loadState(getFilesDir());
-                    checkForUpdates();
-                default:
-                    Log.w(LOG_TAG, "Got undefined result code from Settings!");
-                    break;
-            }
-        } else if (requestCode == CONTENTPACKS_REQUEST_CODE) {
-            switch (resultCode) {
-                case ContentPacksResults.DEFAULT:
-                    Log.d(LOG_TAG, "Received 0 from ContentPacks Activity. Doing nothing.");
-                    break;
-                case ContentPacksResults.UPDATED:
-                    Log.d(LOG_TAG, "Received 1 from ContentPacks Activity. Updating State");
-                    state = AppState.loadState(getFilesDir());
-                    break;
-                default:
-                    Log.w(LOG_TAG, "Got undefined result code from ContentPacks!");
-                    break;
-            }
+
+        switch (requestCode) {
+            case SETTINGS_REQUEST_CODE:
+                evalSettingsRequest(resultCode);
+                break;
+            case CONTENTPACKS_REQUEST_CODE:
+                evalContentpacksRequest(resultCode);
+                break;
+            default:
+                Log.d(LOG_TAG, "Unknown request code: " + requestCode);
+                break;
         }
     }
 
@@ -127,11 +153,21 @@ public class Home extends AppCompatActivity {
 
         try (CSVReaderHeaderAware packIn = new CSVReaderHeaderAware(new InputStreamReader(getResources().openRawResource(R.raw.contentpacks)))) {
             ArrayList<ContentPack> packList = new ArrayList<>();
-            Map<String, String> packMap = null;
+            Map<String, String> packMap;
             while ((packMap = packIn.readMap()) != null) {
-                int id = Integer.parseInt(packMap.get("content_pack_id"));
-                int version = Integer.parseInt(packMap.get("content_pack_version"));
-                int minAge = Integer.parseInt(packMap.get("content_pack_min_age"));
+                String packId = packMap.get("content_pack_id");
+                String packVersion = packMap.get("content_pack_version");
+                String packMinAge = packMap.get("content_pack_min_age");
+
+                if (packId == null || packVersion == null || packMinAge == null) {
+                    Log.w(LOG_TAG, "Malformed pack, skipping this one");
+                    continue;
+                }
+
+                int id = Integer.parseInt(packId);
+                int version = Integer.parseInt(packVersion);
+                int minAge = Integer.parseInt(packMinAge);
+
                 String keywords = packMap.get("content_pack_keywords");
                 String description = packMap.get("content_pack_description");
                 String name = packMap.get("content_pack_name");
@@ -141,21 +177,28 @@ public class Home extends AppCompatActivity {
             }
             Log.i(LOG_TAG, "Found " + packList.size() + " Packs!");
             state.setPacks(packList);
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-            return state;
-        } catch (IOException ioe) {
+        } catch (IOException | CsvValidationException ioe) {
             ioe.printStackTrace();
             return state;
         }
 
         try (CSVReaderHeaderAware questionIn = new CSVReaderHeaderAware(new InputStreamReader(getResources().openRawResource(R.raw.questions)))) {
             ArrayList<Question> questionList = new ArrayList<>();
-            Map<String, String> questionMap = null;
+            Map<String, String> questionMap;
+
             while ((questionMap = questionIn.readMap()) != null) {
-                int id = Integer.parseInt(questionMap.get("question_id"));
-                int packID = Integer.parseInt(questionMap.get("content_pack_id_fk"));
+                String qId = questionMap.get("question_id");
+                String packIdFk = questionMap.get("content_pack_id_fk");
+
+                if (qId == null | packIdFk == null) {
+                    Log.w(LOG_TAG, "Malformed question, skipping this one");
+                    continue;
+                }
+
+                int id = Integer.parseInt(qId);
+                int packID = Integer.parseInt(packIdFk);
                 String string = questionMap.get("question_string");
+
                 Question question = new Question(id, string, packID);
                 questionList.add(question);
             }
@@ -168,20 +211,27 @@ public class Home extends AppCompatActivity {
         }
 
         state.setInitialized(true);
+
         if (state.saveState(getFilesDir())) {
             Log.i(LOG_TAG, "Saved State to Disk!");
         } else {
             Log.w(LOG_TAG, "Error when saving state!");
         }
+
         return state;
     }
 
     private void checkForUpdates() {
-        CheckForUpdates checkForUpdatesTask = new CheckForUpdates();
-        checkForUpdatesTask.execute(homeActivity);
+        CheckForUpdates checkForUpdatesTask = new CheckForUpdates(this, this);
+        checkForUpdatesTask.execute();
     }
 
-    public void updatesFinished(boolean success) {
+    /*
+     * Update-Methods
+     */
+
+    @Override
+    public void updatesFinished(Boolean success) {
         if (success) {
             Log.d(LOG_TAG, "Updates have finished! Can continue with program as normal.");
         } else {
@@ -189,9 +239,38 @@ public class Home extends AppCompatActivity {
         }
     }
 
+    @Override
     public void setInfoText(String message) {
-        TextView info = findViewById(R.id.progress_info);
-        info.setText(message);
+        runOnUiThread(() -> info.setText(message));
+    }
+
+    @Override
+    public AppState getState() {
+        return state;
+    }
+
+    @Override
+    public void showLongToast(String text) {
+        Utils.showLongToast(this, text);
+    }
+
+    @Override
+    public void setMainProgressVisible(boolean isVisible) {
+        Utils.setMainProgressVisible(this, isVisible);
+    }
+
+    @Override
+    public void setMainProgressProgress(boolean indeterminate, int progress) {
+        runOnUiThread(() -> {
+            if (progressBar == null) {
+                Log.w(LOG_TAG, "Cannot get Progressbar!");
+            } else if (indeterminate) {
+                progressBar.setIndeterminate(true);
+            } else {
+                progressBar.setIndeterminate(false);
+                progressBar.setProgress(progress);
+            }
+        });
     }
 
     /*
