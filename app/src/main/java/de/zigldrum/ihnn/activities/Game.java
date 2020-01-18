@@ -6,15 +6,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
+import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Utils;
 
 import static de.zigldrum.ihnn.utils.Constants.AgeRestrictions.NSFW_BORDER;
@@ -36,7 +37,13 @@ public class Game extends AppCompatActivity {
 
         Log.i(LOG_TAG, "Game was created!");
         Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
-        state = AppState.loadState(getFilesDir());
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        state = AppState.loadState(getFilesDir());  // This operation is very expensive
         questions = getAndFilterQuestions();
         if (questions.isEmpty()) {
             Utils.showLongToast(getApplicationContext(), getResources().getString(R.string.info_no_questions_available));
