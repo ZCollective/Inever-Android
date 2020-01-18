@@ -17,10 +17,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
-import de.zigldrum.ihnn.activities.ContentPacks;
-import de.zigldrum.ihnn.activities.Game;
-import de.zigldrum.ihnn.activities.ProposeQuestion;
-import de.zigldrum.ihnn.activities.Settings;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
 import de.zigldrum.ihnn.tasks.CheckForUpdates;
@@ -198,31 +194,23 @@ public class Home extends AppCompatActivity {
         info.setText(message);
     }
 
-    public void startGame(View view) {
-        Intent intent = new Intent(this, Game.class);
-        String message = "Have fun!";
-        intent.putExtra("msg", message);
-        startActivity(intent);
+    /*
+     * GUI-Callbacks
+     */
+
+    public void startGame(View v) {
+        startActivity(Utils.startGame(this));
     }
 
     public void openSettings(View v) {
-        Intent intent = new Intent(this, Settings.class);
-        String message = "Go set some things!";
-        intent.putExtra("msg", message);
-        startActivityForResult(intent, SETTINGS_REQUEST_CODE);
+        startActivityForResult(Utils.openSettings(this), SETTINGS_REQUEST_CODE);
     }
 
     public void openProposals(View v) {
-        Intent intent = new Intent(this, ProposeQuestion.class);
-        String message = "Go propose!";
-        intent.putExtra("msg", message);
-        startActivity(intent);
+        startActivity(Utils.openProposals(this));
     }
 
     public void openContentManagement(View v) {
-        Intent intent = new Intent(this, ContentPacks.class);
-        String message = "Go manage!";
-        intent.putExtra("msg", message);
-        startActivityForResult(intent, CONTENTPACKS_REQUEST_CODE);
+        startActivityForResult(Utils.openContentManagement(this), CONTENTPACKS_REQUEST_CODE);
     }
 }
