@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.contentpacks.view.ContentPacks">
+    tools:context=".activities.ContentPacks">
 
     <Button
-        android:id="@+id/packs-back"
+        android:id="@+id/packs_back"
         android:layout_width="140dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
@@ -31,7 +31,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@id/packs-back"
+        app:layout_constraintBottom_toTopOf="@id/packs_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"

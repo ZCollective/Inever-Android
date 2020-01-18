@@ -34,7 +34,7 @@
             android:id="@+id/rec_packs_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="contentpackname"
+            android:hint="@string/contentpackname"
             android:textColor="@color/text_color"
             android:textSize="24sp" />
 
@@ -50,7 +50,7 @@
             android:id="@+id/rec_packs_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="contentpackdesc"
+            android:hint="@string/contentpackdesc"
             android:textColor="@color/text_color"
             android:textSize="18sp" />
 

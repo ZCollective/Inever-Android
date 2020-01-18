@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.Game">
+    tools:context=".activities.Game">
 
     <TextView
         android:id="@+id/question_text"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/space3" />
 
     <Button
-        android:id="@+id/btn-back"
+        android:id="@+id/btn_back"
         android:layout_width="140dp"
         android:layout_height="70dp"
         android:layout_marginStart="8dp"
