@@ -82,18 +82,51 @@ public class Game extends AppCompatActivity {
     }
 
     private List<Question> getAndFilterQuestions() {
-        List<ContentPack> enabledPacks = state.getPacks().stream().filter(p -> !state.getDisabledPacks().contains(p.getId())).collect(Collectors.toList());
+        List<ContentPack> enabledPacks = state.getPacks()
+                .stream()
+                .filter(p -> !state.getDisabledPacks().contains(p.getId()))
+                .collect(Collectors.toList());
+
         if (state.isOnlyNSFW()) {
             Log.d(LOG_TAG, "Ignoring other age settings. NSFWOnly mode overrides!");
-            List<Integer> nsfwPackIDs = enabledPacks.stream().filter(p -> p.getMinAge() >= NSFW_BORDER).map(ContentPack::getId).collect(Collectors.toList());
-            return state.getQuestions().parallelStream().filter(q -> nsfwPackIDs.contains(q.getPackid())).collect(Collectors.toList());
+            List<Integer> nsfwPackIDs = enabledPacks
+                    .stream()
+                    .filter(p -> p.getMinAge() >= NSFW_BORDER)
+                    .map(ContentPack::getId)
+                    .collect(Collectors.toList());
+
+            return state
+                    .getQuestions()
+                    .parallelStream()
+                    .filter(q -> nsfwPackIDs.contains(q.getPackid()))
+                    .collect(Collectors.toList());
+
         } else if (state.getEnableNSFW()) {
-            List<Integer> enabledPackIDs = enabledPacks.stream().map(ContentPack::getId).collect(Collectors.toList());
-            return state.getQuestions().parallelStream().filter(q -> enabledPackIDs.contains(q.getPackid())).collect(Collectors.toList());
+            Log.d(LOG_TAG, "NSFW Mode enabled.");
+            List<Integer> enabledPackIDs = enabledPacks
+                    .stream()
+                    .map(ContentPack::getId)
+                    .collect(Collectors.toList());
+
+            return state
+                    .getQuestions()
+                    .parallelStream()
+                    .filter(q -> enabledPackIDs.contains(q.getPackid()))
+                    .collect(Collectors.toList());
+
         } else {
-            Log.d(LOG_TAG, "NON NSFW Mode enabled.");
-            List<Integer> nonNsfwPackIDs = enabledPacks.stream().filter(p -> p.getMinAge() < NSFW_BORDER).map(ContentPack::getId).collect(Collectors.toList());
-            return state.getQuestions().parallelStream().filter(q -> nonNsfwPackIDs.contains(q.getPackid())).collect(Collectors.toList());
+            Log.d(LOG_TAG, "NON-NSFW Mode enabled.");
+            List<Integer> nonNsfwPackIDs = enabledPacks
+                    .stream()
+                    .filter(p -> p.getMinAge() < NSFW_BORDER)
+                    .map(ContentPack::getId)
+                    .collect(Collectors.toList());
+
+            return state
+                    .getQuestions()
+                    .parallelStream()
+                    .filter(q -> nonNsfwPackIDs.contains(q.getPackid()))
+                    .collect(Collectors.toList());
         }
     }
 
