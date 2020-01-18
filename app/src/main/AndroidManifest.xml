@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.ProposeQuestion"></activity>
-        <activity android:name=".views.Settings" />
+        <activity android:name=".activities.Settings" />
         <activity android:name=".views.contentpacks.view.ContentPacks" />
         <activity android:name=".views.Game" />
         <activity android:name=".Home">

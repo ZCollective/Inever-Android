@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.views;
+package de.zigldrum.ihnn.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
