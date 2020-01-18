@@ -1,6 +1,6 @@
 package de.zigldrum.ihnn.services;
 
-import de.zigldrum.ihnn.utils.AppState;
+import de.zigldrum.ihnn.BuildConfig;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -11,7 +11,7 @@ public class RequesterService {
     public static ContentService buildContentService() {
         if (contentService == null) {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(AppState.BASE_URL)
+                    .baseUrl(BuildConfig.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     //.client(builder.build())
                     .build();

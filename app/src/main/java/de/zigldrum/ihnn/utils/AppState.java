@@ -19,13 +19,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import de.zigldrum.ihnn.BuildConfig;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
 
 public class AppState implements Serializable {
-
-    public final static String BASE_URL = BuildConfig.DEBUG ? "http://spackenserver.de:11337/" : "http://spackenserver.de:11337/";
 
     private static final long serialVersionUID = 2242379700997586835L;
     private static final String APP_STATE_FILE = "AppState.db";
