@@ -1,6 +1,7 @@
 package de.zigldrum.ihnn.objects;
 
 public class ProposalRequestBody {
+
     final String string;
     final String sender;
 

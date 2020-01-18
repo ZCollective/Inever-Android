@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Question implements Serializable {
 
@@ -24,10 +25,10 @@ public class Question implements Serializable {
     public Question() {
     }
 
-    public Question(int id, String string, int packid) {
+    public Question(int id, String string, int packId) {
         this.id = id;
         this.string = string;
-        this.packid = packid;
+        this.packid = packId;
     }
 
     public Integer getId() {
@@ -50,14 +51,14 @@ public class Question implements Serializable {
         return packid;
     }
 
-    public void setPackid(Integer packid) {
-        this.packid = packid;
+    public void setPackid(Integer packId) {
+        this.packid = packId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o.getClass().equals(this.getClass())) {
-            return ((Question) o).getId() == this.getId();
+            return Objects.equals(((Question) o).getId(), this.getId());
         }
         return false;
     }

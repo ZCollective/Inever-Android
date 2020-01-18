@@ -1,8 +1,11 @@
 package de.zigldrum.ihnn.objects;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ContentPackWithQuestions extends ContentPack implements Serializable {
 
@@ -10,7 +13,7 @@ public class ContentPackWithQuestions extends ContentPack implements Serializabl
 
     private List<Question> questions;
 
-    public ContentPackWithQuestions(int id, String name, String description, String keywords, int minAge, int version, List<Question> possibleQuestions) {
+    public ContentPackWithQuestions(int id, String name, String description, String keywords, int minAge, int version, @NonNull List<Question> possibleQuestions) {
         super(id, name, description, keywords, minAge, version);
         questions = new ArrayList<>();
         possibleQuestions.stream().filter(q -> q.getPackid() == id).forEach(q -> questions.add(q));
@@ -24,7 +27,7 @@ public class ContentPackWithQuestions extends ContentPack implements Serializabl
         return questions;
     }
 
-    public void refreshQuestions(List<Question> newQuestions) {
-        newQuestions.stream().filter(q -> (q.getPackid() == getId() && (!questions.contains(q)))).forEach(q -> questions.add(q));
+    public void refreshQuestions(@NonNull List<Question> newQuestions) {
+        newQuestions.stream().filter(q -> (Objects.equals(q.getPackid(), getId()) && (!questions.contains(q)))).forEach(q -> questions.add(q));
     }
 }

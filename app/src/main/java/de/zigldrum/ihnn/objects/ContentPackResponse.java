@@ -1,5 +1,7 @@
 package de.zigldrum.ihnn.objects;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -21,7 +23,12 @@ public class ContentPackResponse {
     @Expose
     private List<ContentPack> msg = null;
 
+    @NonNull
     public Boolean getSuccess() {
+        if (success == null) {
+            return Boolean.FALSE;
+        }
+
         return success;
     }
 
@@ -29,7 +36,12 @@ public class ContentPackResponse {
         this.success = success;
     }
 
+    @NonNull
     public Boolean getError() {
+        if (error == null) {
+            return Boolean.FALSE;
+        }
+
         return error;
     }
 
@@ -43,6 +55,10 @@ public class ContentPackResponse {
 
     public void setMsg(List<ContentPack> msg) {
         this.msg = msg;
+    }
+
+    public String getStatus() {
+        return "Success:" + getSuccess() + " | Error: " + getError();
     }
 
 }

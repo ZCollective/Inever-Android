@@ -54,6 +54,9 @@ public class ContentPack implements Serializable {
     }
 
     public String getName() {
+        if (name == null) {
+            return "";
+        }
         return name;
     }
 
@@ -95,15 +98,13 @@ public class ContentPack implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\n------------------------------------------\n");
-        builder.append("ID: " + id + "\n");
-        builder.append("Name: " + name + "\n");
-        builder.append("Descr.: " + description + "\n");
-        builder.append("Keywords: " + keywords + "\n");
-        builder.append("Min Age: " + minAge + "\n");
-        builder.append("Version: " + version + "\n");
-        builder.append("\n------------------------------------------\n");
-        return builder.toString();
+        return "\n------------------------------------------\n" +
+                "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Descr.: " + description + "\n" +
+                "Keywords: " + keywords + "\n" +
+                "Min Age: " + minAge + "\n" +
+                "Version: " + version + "\n" +
+                "\n------------------------------------------\n";
     }
 }

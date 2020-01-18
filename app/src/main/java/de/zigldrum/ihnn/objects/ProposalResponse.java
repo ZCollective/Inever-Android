@@ -1,5 +1,7 @@
 package de.zigldrum.ihnn.objects;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -19,7 +21,12 @@ public class ProposalResponse {
     @Expose
     private String msg;
 
+    @NonNull
     public Boolean getSuccess() {
+        if (success == null) {
+            return Boolean.FALSE;
+        }
+
         return success;
     }
 
@@ -27,7 +34,12 @@ public class ProposalResponse {
         this.success = success;
     }
 
+    @NonNull
     public Boolean getError() {
+        if (error == null) {
+            return Boolean.FALSE;
+        }
+
         return error;
     }
 
@@ -41,5 +53,9 @@ public class ProposalResponse {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getStatus() {
+        return "Success:" + getSuccess() + " | Error: " + getError();
     }
 }
