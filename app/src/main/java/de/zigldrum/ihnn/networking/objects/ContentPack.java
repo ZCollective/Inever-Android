@@ -1,5 +1,7 @@
 package de.zigldrum.ihnn.networking.objects;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -96,6 +98,7 @@ public class ContentPack implements Serializable {
         this.version = version;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "\n------------------------------------------\n" +

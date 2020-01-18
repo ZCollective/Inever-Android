@@ -12,21 +12,19 @@ import de.zigldrum.ihnn.activities.ContentPacks;
 
 class ContentPacksViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView name;
-    public EditText id;
-
-    TextView description;
+    TextView description, name;
+    EditText id;
     Switch toggleSwitch;
 
-    ContentPacksViewHolder(View v, ContentPacks app) {
-        super(v);
+    ContentPacksViewHolder(View view, ContentPacks app) {
+        super(view);
 
-        id = v.findViewById(R.id.rec_packs_id);
-        name = v.findViewById(R.id.rec_packs_name);
-        description = v.findViewById(R.id.rec_packs_desc);
-        toggleSwitch = v.findViewById(R.id.rec_packs_enable);
+        id = view.findViewById(R.id.rec_packs_id);
+        name = view.findViewById(R.id.rec_packs_name);
+        description = view.findViewById(R.id.rec_packs_desc);
+        toggleSwitch = view.findViewById(R.id.rec_packs_enable);
 
-        toggleSwitch.setOnClickListener(v1 -> {
+        toggleSwitch.setOnClickListener(v -> {
             if (toggleSwitch.isChecked()) {
                 app.enablePack(Integer.valueOf(id.getText().toString()));
             } else {

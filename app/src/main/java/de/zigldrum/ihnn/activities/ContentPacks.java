@@ -54,14 +54,14 @@ public class ContentPacks extends AppCompatActivity {
 
     public void enablePack(Integer id) {
         this.updated = true;
-        state.getDisabledPacks().remove(id);
         Log.d(LOG_TAG, "Enabling Pack: " + id);
+        state.getDisabledPacks().remove(id);
     }
 
     public void disablePack(Integer id) {
         this.updated = true;
-        state.getDisabledPacks().add(id);
         Log.d(LOG_TAG, "Disabling Pack: " + id);
+        state.getDisabledPacks().add(id);
     }
 
     @Override
