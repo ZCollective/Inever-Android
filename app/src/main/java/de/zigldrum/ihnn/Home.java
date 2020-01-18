@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
+import de.zigldrum.ihnn.activities.ContentPacks;
 import de.zigldrum.ihnn.activities.ProposeQuestion;
 import de.zigldrum.ihnn.activities.Settings;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
@@ -27,7 +28,6 @@ import de.zigldrum.ihnn.utils.Constants.ContentPacksResults;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;
 import de.zigldrum.ihnn.views.Game;
-import de.zigldrum.ihnn.views.contentpacks.view.ContentPacks;
 
 import static de.zigldrum.ihnn.utils.Constants.RequestCodes.CONTENTPACKS_REQUEST_CODE;
 import static de.zigldrum.ihnn.utils.Constants.RequestCodes.SETTINGS_REQUEST_CODE;

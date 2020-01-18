@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.views.contentpacks.objects;
+package de.zigldrum.ihnn.activities.content;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import de.zigldrum.ihnn.R;
+import de.zigldrum.ihnn.activities.ContentPacks;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
-import de.zigldrum.ihnn.views.contentpacks.view.ContentPacks;
 
 public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHolder> {
 
@@ -36,9 +36,9 @@ public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHo
     @Override
     public void onBindViewHolder(@NonNull ContentPacksViewHolder viewHolder, int i) {
         ContentPack cp = packs.get(i);
-        viewHolder.id.setText(String.valueOf(cp.getId()));
         viewHolder.name.setText(cp.getName());
         viewHolder.description.setText(cp.getDescription());
+        viewHolder.id.setText(String.valueOf(cp.getId()));
         viewHolder.toggleSwitch.setChecked(!app.state.getDisabledPacks().contains(cp.getId()));
     }
 

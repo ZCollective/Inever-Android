@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.ProposeQuestion"></activity>
         <activity android:name=".activities.Settings" />
-        <activity android:name=".views.contentpacks.view.ContentPacks" />
+        <activity android:name=".activities.ContentPacks" />
         <activity android:name=".views.Game" />
         <activity android:name=".Home">
             <intent-filter>

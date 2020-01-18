@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.views.contentpacks.view;
+package de.zigldrum.ihnn.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.zigldrum.ihnn.R;
+import de.zigldrum.ihnn.activities.content.ContentPacksAdapter;
 import de.zigldrum.ihnn.utils.AppState;
-import de.zigldrum.ihnn.views.contentpacks.objects.ContentPacksAdapter;
 
 import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.DEFAULT;
 import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.UPDATED;
@@ -19,9 +19,7 @@ import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.UPDATED;
 public class ContentPacks extends AppCompatActivity {
 
     private static final String LOG_TAG = "ContentPacks";
-
     public AppState state;
-
     private boolean updated = false;
 
     @Override

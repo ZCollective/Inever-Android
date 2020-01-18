@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.views.contentpacks.objects;
+package de.zigldrum.ihnn.activities.content;
 
 import android.view.View;
 import android.widget.EditText;
@@ -8,9 +8,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.views.contentpacks.view.ContentPacks;
+import de.zigldrum.ihnn.activities.ContentPacks;
 
-public class ContentPacksViewHolder extends RecyclerView.ViewHolder {
+class ContentPacksViewHolder extends RecyclerView.ViewHolder {
 
     public TextView name;
     public EditText id;
