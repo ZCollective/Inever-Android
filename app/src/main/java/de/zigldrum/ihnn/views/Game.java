@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
-import de.zigldrum.ihnn.objects.AppState;
+import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Utils;
 
 import static de.zigldrum.ihnn.utils.Constants.AgeRestrictions.NSFW_BORDER;

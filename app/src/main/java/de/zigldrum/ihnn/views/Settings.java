@@ -9,7 +9,7 @@ import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.objects.AppState;
+import de.zigldrum.ihnn.utils.AppState;
 
 import static de.zigldrum.ihnn.utils.Constants.SettingsResults.DEFAULT;
 import static de.zigldrum.ihnn.utils.Constants.SettingsResults.STATE_AND_UPDATE;
@@ -24,6 +24,7 @@ public class Settings extends AppCompatActivity {
     private boolean stateUpdated = false;
 
     private AppState state;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

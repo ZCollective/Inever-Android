@@ -19,8 +19,8 @@ import java.util.Map;
 
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
-import de.zigldrum.ihnn.objects.AppState;
 import de.zigldrum.ihnn.tasks.CheckForUpdates;
+import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Constants.ContentPacksResults;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;

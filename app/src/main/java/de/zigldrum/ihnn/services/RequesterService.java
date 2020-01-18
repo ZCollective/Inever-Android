@@ -1,6 +1,6 @@
 package de.zigldrum.ihnn.services;
 
-import de.zigldrum.ihnn.objects.AppState;
+import de.zigldrum.ihnn.utils.AppState;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

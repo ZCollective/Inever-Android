@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.objects.AppState;
+import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.views.contentpacks.objects.ContentPacksAdapter;
 
 import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.DEFAULT;

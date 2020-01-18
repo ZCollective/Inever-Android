@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.objects;
+package de.zigldrum.ihnn.utils;
 
 import android.util.Log;
 
