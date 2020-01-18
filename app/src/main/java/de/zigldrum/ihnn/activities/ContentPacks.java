@@ -26,8 +26,13 @@ public class ContentPacks extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_packs);
+    }
 
-        state = AppState.loadState(getFilesDir());
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        state = AppState.loadState(getFilesDir());  // This operation is very expensive
 
         RecyclerView rView = findViewById(R.id.packs_list_view);
 
