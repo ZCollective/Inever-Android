@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ihnn_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.ProposeQuestion"></activity>
+        <activity android:name=".activities.ProposeQuestion"></activity>
         <activity android:name=".views.Settings" />
         <activity android:name=".views.contentpacks.view.ContentPacks" />
         <activity android:name=".views.Game" />
