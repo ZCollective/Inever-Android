@@ -2,6 +2,8 @@ package de.zigldrum.ihnn.objects;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,56 +26,60 @@ public class AppState implements Serializable {
     public final static String BASE_URL = BuildConfig.DEBUG ? "http://spackenserver.de:11337/" : "http://spackenserver.de:11337/";
 
     private static final long serialVersionUID = 2242379700997586835L;
-    private static final String appStateFile = "AppState.db";
+    private static final String APP_STATE_FILE = "AppState.db";
     private static final String LOG_TAG = "AppState";
 
-    private List<ContentPack> packs;
-    private List<Question> questions;
-    private Set<Integer> disabledPacks;
+    private final List<ContentPack> packs;
+    private final List<Question> questions;
+    private final Set<Integer> disabledPacks;
 
-    private boolean enableAutoUpdates;
     private boolean initialized;
     private boolean enableNSFW;
+    private boolean enableAutoUpdates;
     private boolean onlyNSFW;
 
     public AppState() {
-        initialized = false;
-        packs = new ArrayList<>();
-        questions = new ArrayList<>();
+        this.packs = new ArrayList<>();
+        this.questions = new ArrayList<>();
+        this.disabledPacks = new HashSet<>();
+
+        this.initialized = false;
         this.enableNSFW = false;
         this.enableAutoUpdates = true;
         this.onlyNSFW = false;
-        this.disabledPacks = new HashSet<>();
     }
 
-    public static AppState loadState(File baseDir) {
+    public static AppState loadState(@NonNull File baseDir) {
         AppState state = null;
-        try (ObjectInputStream stateIn = new ObjectInputStream(new FileInputStream(new File(baseDir, appStateFile)))) {
+
+        try (ObjectInputStream stateIn = new ObjectInputStream(new FileInputStream(new File(baseDir, APP_STATE_FILE)))) {
             Log.d(LOG_TAG, "Attempting to parse AppState.");
             state = (AppState) stateIn.readObject();
             Log.d(LOG_TAG, "Successfully read AppState.");
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        } finally {
-            return state;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
+        return state;
     }
 
-    public static boolean isFirstStart(File baseDir) {
+    public static boolean isFirstStart(@NonNull File baseDir) {
         Log.d(LOG_TAG, "Checking if AppState File exists");
-        Log.d(LOG_TAG, "Files: " + Arrays.stream(baseDir.listFiles()).map(f -> f.getAbsolutePath()).collect(Collectors.toList()).toString());
-        Optional<File> appFile = Arrays.stream(baseDir.listFiles()).filter(f -> f.getAbsolutePath().endsWith(appStateFile)).findFirst();
+        Log.d(LOG_TAG, "Files: " + Arrays.stream(baseDir.listFiles()).map(File::getAbsolutePath).collect(Collectors.toList()).toString());
+
+        Optional<File> appFile = Arrays.stream(baseDir.listFiles()).filter(f -> f.getAbsolutePath().endsWith(APP_STATE_FILE)).findFirst();
+
         if (appFile.isPresent()) {
             File actualFile = appFile.get();
+
             Log.d(LOG_TAG, "Found file: " + actualFile);
+
             String permissions = "Permissions: ";
             permissions += actualFile.canRead() ? "r/" : "-/";
             permissions += actualFile.canWrite() ? "w/" : "-/";
             permissions += actualFile.canExecute() ? "x" : "-";
-            Log.d(LOG_TAG, permissions);
 
+            Log.d(LOG_TAG, permissions);
             return false;
         } else {
             return true;
@@ -105,12 +111,14 @@ public class AppState implements Serializable {
     }
 
     public Set<Integer> getDisabledPacks() {
-        if (disabledPacks == null) disabledPacks = new HashSet<>();
         return disabledPacks;
     }
 
     public void setDisabledPacks(Set<Integer> disabledPacks) {
-        this.disabledPacks = disabledPacks;
+        this.disabledPacks.clear();
+        if (disabledPacks != null) {
+            this.disabledPacks.addAll(disabledPacks);
+        }
     }
 
     public boolean isInitialized() {
@@ -126,7 +134,10 @@ public class AppState implements Serializable {
     }
 
     public void setPacks(List<ContentPack> packs) {
-        this.packs = packs;
+        this.packs.clear();
+        if (packs != null) {
+            this.packs.addAll(packs);
+        }
     }
 
     public List<Question> getQuestions() {
@@ -134,14 +145,17 @@ public class AppState implements Serializable {
     }
 
     public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+        this.questions.clear();
+        if (questions != null) {
+            this.questions.addAll(questions);
+        }
     }
 
     public boolean saveState(File baseDir) {
-        try (ObjectOutputStream stateOut = new ObjectOutputStream(new FileOutputStream(new File(baseDir, appStateFile)))) {
+        try (ObjectOutputStream stateOut = new ObjectOutputStream(new FileOutputStream(new File(baseDir, APP_STATE_FILE)))) {
             stateOut.writeObject(this);
             Log.d(LOG_TAG, "Successfully stored AppState to: " + baseDir.getAbsolutePath());
-            Log.d(LOG_TAG, "Other files: " + Arrays.stream(baseDir.listFiles()).map(f -> f.getAbsolutePath()).collect(Collectors.toList()).toString());
+            Log.d(LOG_TAG, "Other files: " + Arrays.stream(baseDir.listFiles()).map(File::getAbsolutePath).collect(Collectors.toList()).toString());
             return true;
         } catch (Exception e) {
             Log.w(LOG_TAG, "Error when writing AppState!", e);
