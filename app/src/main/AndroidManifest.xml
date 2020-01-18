@@ -15,7 +15,7 @@
         <activity android:name=".activities.ProposeQuestion"></activity>
         <activity android:name=".activities.Settings" />
         <activity android:name=".activities.ContentPacks" />
-        <activity android:name=".views.Game" />
+        <activity android:name=".activities.Game" />
         <activity android:name=".Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
