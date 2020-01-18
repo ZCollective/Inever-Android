@@ -16,7 +16,7 @@ import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
 import de.zigldrum.ihnn.networking.objects.Question;
 import de.zigldrum.ihnn.networking.objects.QuestionResponse;
-import de.zigldrum.ihnn.services.RequesterService;
+import de.zigldrum.ihnn.networking.services.RequesterService;
 import de.zigldrum.ihnn.utils.Utils;
 import retrofit2.Call;
 
@@ -31,7 +31,7 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
         app = activities[0];
         app.runOnUiThread(() -> app.setInfoText(app.getResources().getString(R.string.info_checking_updates)));
         try {
-            Call<ContentPackResponse> request = RequesterService.buildContentService().getPacks();
+            Call<ContentPackResponse> request = RequesterService.getContentService().getPacks();
             ContentPackResponse cpr = request.execute().body();
             Log.i(LOG_TAG, "Received Response. Message: Success:" + cpr.getSuccess() + " | Error: " + cpr.getError());
             List<ContentPack> remotePacks = cpr.getMsg();
@@ -83,7 +83,7 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
             int progressInc = (90 / remotePacks.size());
             for (ContentPack newPack : remotePacks) {
                 try {
-                    Call<QuestionResponse> questionRequest = RequesterService.buildContentService().getQuestions(newPack.getId());
+                    Call<QuestionResponse> questionRequest = RequesterService.getContentService().getQuestions(newPack.getId());
                     QuestionResponse qr = questionRequest.execute().body();
                     if (qr.getError()) {
                         Log.w(LOG_TAG, "Get Questions for pack: " + newPack.getId() + " with version " + newPack.getVersion() + " Failed.");
