@@ -28,7 +28,9 @@ android {
         versionCode 10
         versionName "2.1"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", 'BASE_URL', "\"http://spackenserver.de:11337/\"")
     }
 
     buildTypes {
@@ -41,10 +43,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+
     sourceSets { debug { assets.srcDirs = ['src/debug/assets', 'src/debug/assets/'] } }
 }
 
@@ -66,6 +70,6 @@ dependencies {
 
     // Testing
     testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
