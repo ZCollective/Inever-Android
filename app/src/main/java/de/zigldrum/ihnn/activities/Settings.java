@@ -37,12 +37,16 @@ public class Settings extends AppCompatActivity {
         Log.i(LOG_TAG, "Settings was created!");
         Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
 
-        state = AppState.loadState(getFilesDir());
-
         nsfwSwitch = findViewById(R.id.settings_nsfw);
         nsfwOnlySwitch = findViewById(R.id.settings_nsfw_only);
         autoUpdateSwitch = findViewById(R.id.settings_auto_update);
+    }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        state = AppState.loadState(getFilesDir());  // This operation is very expensive
         nsfwSwitch.setChecked(state.getEnableNSFW());
         nsfwOnlySwitch.setChecked(state.isOnlyNSFW());
         autoUpdateSwitch.setChecked(state.getEnableAutoUpdates());
