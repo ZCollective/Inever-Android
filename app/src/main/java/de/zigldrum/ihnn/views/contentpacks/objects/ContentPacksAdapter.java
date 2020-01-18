@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.objects.ContentPack;
+import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.views.contentpacks.view.ContentPacks;
 
 public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHolder> {

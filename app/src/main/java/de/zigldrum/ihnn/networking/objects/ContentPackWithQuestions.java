@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.objects;
+package de.zigldrum.ihnn.networking.objects;
 
 import androidx.annotation.NonNull;
 

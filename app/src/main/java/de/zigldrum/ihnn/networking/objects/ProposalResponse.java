@@ -1,11 +1,11 @@
-package de.zigldrum.ihnn.objects;
+package de.zigldrum.ihnn.networking.objects;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class QuestionResponse {
+public class ProposalResponse {
 
     private final static long serialVersionUID = -7943671069202319658L;
 
@@ -19,9 +19,14 @@ public class QuestionResponse {
 
     @SerializedName("msg")
     @Expose
-    private List<Question> msg = null;
+    private String msg;
 
+    @NonNull
     public Boolean getSuccess() {
+        if (success == null) {
+            return Boolean.FALSE;
+        }
+
         return success;
     }
 
@@ -29,7 +34,12 @@ public class QuestionResponse {
         this.success = success;
     }
 
+    @NonNull
     public Boolean getError() {
+        if (error == null) {
+            return Boolean.FALSE;
+        }
+
         return error;
     }
 
@@ -37,11 +47,15 @@ public class QuestionResponse {
         this.error = error;
     }
 
-    public List<Question> getMsg() {
+    public String getMsg() {
         return msg;
     }
 
-    public void setMsg(List<Question> msg) {
+    public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getStatus() {
+        return "Success:" + getSuccess() + " | Error: " + getError();
     }
 }

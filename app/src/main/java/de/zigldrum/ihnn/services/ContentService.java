@@ -1,9 +1,9 @@
 package de.zigldrum.ihnn.services;
 
-import de.zigldrum.ihnn.objects.ContentPackResponse;
-import de.zigldrum.ihnn.objects.ProposalRequestBody;
-import de.zigldrum.ihnn.objects.ProposalResponse;
-import de.zigldrum.ihnn.objects.QuestionResponse;
+import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
+import de.zigldrum.ihnn.networking.objects.ProposalRequestBody;
+import de.zigldrum.ihnn.networking.objects.ProposalResponse;
+import de.zigldrum.ihnn.networking.objects.QuestionResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

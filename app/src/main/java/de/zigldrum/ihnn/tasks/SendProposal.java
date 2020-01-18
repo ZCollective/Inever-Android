@@ -6,8 +6,8 @@ import android.util.Log;
 import java.net.ConnectException;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.objects.ProposalRequestBody;
-import de.zigldrum.ihnn.objects.ProposalResponse;
+import de.zigldrum.ihnn.networking.objects.ProposalRequestBody;
+import de.zigldrum.ihnn.networking.objects.ProposalResponse;
 import de.zigldrum.ihnn.services.RequesterService;
 import de.zigldrum.ihnn.utils.Utils;
 import de.zigldrum.ihnn.views.ProposeQuestion;

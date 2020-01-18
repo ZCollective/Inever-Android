@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import de.zigldrum.ihnn.BuildConfig;
+import de.zigldrum.ihnn.networking.objects.ContentPack;
+import de.zigldrum.ihnn.networking.objects.Question;
 
 public class AppState implements Serializable {
 

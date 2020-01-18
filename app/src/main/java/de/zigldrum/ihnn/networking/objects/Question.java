@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn.objects;
+package de.zigldrum.ihnn.networking.objects;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
