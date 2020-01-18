@@ -13,8 +13,8 @@ import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.objects.AppState;
 import de.zigldrum.ihnn.views.contentpacks.objects.ContentPacksAdapter;
 
-import static de.zigldrum.ihnn.finals.ContentPacksResults.DEFAULT;
-import static de.zigldrum.ihnn.finals.ContentPacksResults.UPDATED;
+import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.DEFAULT;
+import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.UPDATED;
 
 public class ContentPacks extends AppCompatActivity {
 

@@ -18,7 +18,7 @@ import de.zigldrum.ihnn.objects.ContentPack;
 import de.zigldrum.ihnn.objects.Question;
 import de.zigldrum.ihnn.utils.Utils;
 
-import static de.zigldrum.ihnn.finals.AgeRestrictions.NSFW_BORDER;
+import static de.zigldrum.ihnn.utils.Constants.AgeRestrictions.NSFW_BORDER;
 
 public class Game extends AppCompatActivity {
 

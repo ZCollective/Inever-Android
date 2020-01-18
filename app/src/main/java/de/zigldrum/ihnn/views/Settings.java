@@ -11,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.objects.AppState;
 
-import static de.zigldrum.ihnn.finals.SettingsResults.DEFAULT;
-import static de.zigldrum.ihnn.finals.SettingsResults.STATE_AND_UPDATE;
-import static de.zigldrum.ihnn.finals.SettingsResults.STATE_CHANGED;
-import static de.zigldrum.ihnn.finals.SettingsResults.UPDATENOW;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.DEFAULT;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.STATE_AND_UPDATE;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.STATE_CHANGED;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.UPDATENOW;
 
 public class Settings extends AppCompatActivity {
 

@@ -17,20 +17,20 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
-import de.zigldrum.ihnn.finals.ContentPacksResults;
-import de.zigldrum.ihnn.finals.SettingsResults;
 import de.zigldrum.ihnn.objects.AppState;
 import de.zigldrum.ihnn.objects.ContentPack;
 import de.zigldrum.ihnn.objects.Question;
 import de.zigldrum.ihnn.tasks.CheckForUpdates;
+import de.zigldrum.ihnn.utils.Constants.ContentPacksResults;
+import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;
 import de.zigldrum.ihnn.views.Game;
 import de.zigldrum.ihnn.views.ProposeQuestion;
 import de.zigldrum.ihnn.views.Settings;
 import de.zigldrum.ihnn.views.contentpacks.view.ContentPacks;
 
-import static de.zigldrum.ihnn.finals.RequestCodes.CONTENTPACKS_REQUEST_CODE;
-import static de.zigldrum.ihnn.finals.RequestCodes.SETTINGS_REQUEST_CODE;
+import static de.zigldrum.ihnn.utils.Constants.RequestCodes.CONTENTPACKS_REQUEST_CODE;
+import static de.zigldrum.ihnn.utils.Constants.RequestCodes.SETTINGS_REQUEST_CODE;
 
 public class Home extends AppCompatActivity {
 
