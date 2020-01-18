@@ -64,9 +64,20 @@ public class AppState implements Serializable {
 
     public static boolean isFirstStart(@NonNull File baseDir) {
         Log.d(LOG_TAG, "Checking if AppState File exists");
-        Log.d(LOG_TAG, "Files: " + Arrays.stream(baseDir.listFiles()).map(File::getAbsolutePath).collect(Collectors.toList()).toString());
 
-        Optional<File> appFile = Arrays.stream(baseDir.listFiles()).filter(f -> f.getAbsolutePath().endsWith(APP_STATE_FILE)).findFirst();
+        File[] files = baseDir.listFiles();  // Read files from file-system once for two operations
+        String fileList = Arrays
+                .stream(files)
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toList())
+                .toString();
+
+        Log.d(LOG_TAG, "Files: " + fileList);
+
+        Optional<File> appFile = Arrays
+                .stream(files)
+                .filter(f -> f.getAbsolutePath().endsWith(APP_STATE_FILE))
+                .findFirst();
 
         if (appFile.isPresent()) {
             File actualFile = appFile.get();
@@ -153,8 +164,15 @@ public class AppState implements Serializable {
     public boolean saveState(File baseDir) {
         try (ObjectOutputStream stateOut = new ObjectOutputStream(new FileOutputStream(new File(baseDir, APP_STATE_FILE)))) {
             stateOut.writeObject(this);
-            Log.d(LOG_TAG, "Successfully stored AppState to: " + baseDir.getAbsolutePath());
-            Log.d(LOG_TAG, "Other files: " + Arrays.stream(baseDir.listFiles()).map(File::getAbsolutePath).collect(Collectors.toList()).toString());
+
+            String dataDirectory = baseDir.getAbsolutePath();
+            String otherFiles = Arrays.stream(baseDir.listFiles())
+                    .map(File::getAbsolutePath)
+                    .collect(Collectors.toList())
+                    .toString();
+
+            Log.d(LOG_TAG, "Successfully stored AppState to: " + dataDirectory);
+            Log.d(LOG_TAG, "Other files: " + otherFiles);
             return true;
         } catch (Exception e) {
             Log.w(LOG_TAG, "Error when writing AppState!", e);
