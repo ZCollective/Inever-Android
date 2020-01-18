@@ -44,8 +44,18 @@ public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMet
 
         Log.d(LOG_TAG, "Running Home onCreate...");
 
+        info = findViewById(R.id.progress_info);
+        progressBar = findViewById(R.id.main_progress);
+
         Utils.setMainProgressVisible(this, true);
         setMainProgressProgress(true, 0);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        Log.d(LOG_TAG, "Running Home onPostCreate...");
 
         if (AppState.isFirstStart(getFilesDir())) {
             Log.i(LOG_TAG, "No AppState! First startup...");
@@ -78,13 +88,6 @@ public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMet
         } else {
             Utils.setMainProgressVisible(this, false);
         }
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        info = findViewById(R.id.progress_info);
-        progressBar = findViewById(R.id.main_progress);
     }
 
     @Override
