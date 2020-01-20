@@ -107,7 +107,7 @@ public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMet
      */
 
     @Override
-    public void updatesFinished(Boolean success) {
+    public void updatesFinished(@NonNull Boolean success) {
         if (success) {
             Log.d(LOG_TAG, "Updates have finished! Can continue with program as normal.");
         } else {
@@ -131,7 +131,7 @@ public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMet
     }
 
     @Override
-    public void setMainProgressProgress(boolean indeterminate, int progress) {
+    public void setMainProgressProgress(boolean indeterminate, @IntRange(from = 0, to = 100) int progress) {
         runOnUiThread(() -> {
             if (progressBar == null) {
                 Log.w(LOG_TAG, "Cannot get Progressbar!");

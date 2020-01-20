@@ -20,7 +20,7 @@ public class Utils {
 
     private static final String LOG_TAG = "Utils";
 
-    public static void showLongToast(Context context, String text) {
+    public static void showLongToast(@NonNull Context context, @NonNull String text) {
         Toast.makeText(context, text, Toast.LENGTH_LONG).show();
     }
 
@@ -37,25 +37,25 @@ public class Utils {
         }
     }
 
-    public static Intent startGame(Context ctx) {
+    public static Intent startGame(@NonNull Context ctx) {
         Intent intent = new Intent(ctx, Game.class);
         intent.putExtra("msg", "Have fun!");
         return intent;
     }
 
-    public static Intent openSettings(Context ctx) {
+    public static Intent openSettings(@NonNull Context ctx) {
         Intent intent = new Intent(ctx, Settings.class);
         intent.putExtra("msg", "Go set some things!");
         return intent;
     }
 
-    public static Intent openProposals(Context ctx) {
+    public static Intent openProposals(@NonNull Context ctx) {
         Intent intent = new Intent(ctx, ProposeQuestion.class);
         intent.putExtra("msg", "Go propose!");
         return intent;
     }
 
-    public static Intent openContentManagement(Context ctx) {
+    public static Intent openContentManagement(@NonNull Context ctx) {
         Intent intent = new Intent(ctx, ContentPacks.class);
         intent.putExtra("msg", "Go manage!");
         return intent;
