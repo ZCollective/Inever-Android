@@ -43,12 +43,14 @@ public class ContentPacks extends AppCompatActivity {
         rView.setHasFixedSize(true);
 
         // Using linear layout
-        RecyclerView.LayoutManager rLayout = new LinearLayoutManager(this);
-        rView.setLayoutManager(rLayout);
+        rView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Sorting, so the packs are always at the same spot
+        List<ContentPack> packs = new ArrayList<>(state.getPacks());
+        Collections.sort(packs, (x, y) -> x.getId().compareTo(y.getId()));
 
         // Setting adapter class
-        RecyclerView.Adapter rAdapter = new ContentPacksAdapter(state.getPacks(), this);
-        rView.setAdapter(rAdapter);
+        rView.setAdapter(new ContentPacksAdapter(packs, this));
     }
 
     public void goBack(View v) {
