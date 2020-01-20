@@ -68,6 +68,9 @@ dependencies {
     // CSV-Parsing
     implementation 'com.opencsv:opencsv:5.0'
 
+    // NoSQL-DB
+    implementation 'io.paperdb:paperdb:2.6'
+
     // Testing
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

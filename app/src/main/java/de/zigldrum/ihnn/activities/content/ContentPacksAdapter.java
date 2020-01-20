@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.zigldrum.ihnn.R;
@@ -18,8 +20,8 @@ public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHo
     private final List<ContentPack> packs;
     private final ContentPacks app;
 
-    public ContentPacksAdapter(List<ContentPack> packs, ContentPacks app) {
-        this.packs = packs;
+    public ContentPacksAdapter(@NonNull Collection<ContentPack> packs, @NonNull ContentPacks app) {
+        this.packs = new ArrayList<>(packs);
         this.app = app;
     }
 

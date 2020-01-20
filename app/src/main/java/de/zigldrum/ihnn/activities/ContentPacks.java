@@ -1,6 +1,5 @@
 package de.zigldrum.ihnn.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,17 +8,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.activities.content.ContentPacksAdapter;
+import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.utils.AppState;
-
-import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.DEFAULT;
-import static de.zigldrum.ihnn.utils.Constants.ContentPacksResults.UPDATED;
 
 public class ContentPacks extends AppCompatActivity {
 
     private static final String LOG_TAG = "ContentPacks";
-    public AppState state;
+
+    public final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
+
     private boolean updated = false;
 
     @Override
@@ -32,7 +35,7 @@ public class ContentPacks extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        state = AppState.loadState(getFilesDir());  // This operation is very expensive
+        Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
 
         RecyclerView rView = findViewById(R.id.packs_list_view);
 
@@ -66,10 +69,14 @@ public class ContentPacks extends AppCompatActivity {
 
     @Override
     public void finish() {
-        if (updated) state.saveState(getFilesDir());
-        Intent data = new Intent();
-        int resultCode = updated ? UPDATED : DEFAULT;
-        setResult(resultCode, data);
+        if (updated) {
+            if (state.saveState()) {
+                Log.i(LOG_TAG, "Saving AppState after Updates!");
+            } else {
+                Log.w(LOG_TAG, "Could not save AppState!");
+            }
+        }
+
         super.finish();
     }
 }

@@ -24,7 +24,7 @@ public class Game extends AppCompatActivity {
 
     private static final String LOG_TAG = "Game";
 
-    public AppState state;
+    private final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated;
 
     private List<Question> questions;
 
@@ -43,7 +43,6 @@ public class Game extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        state = AppState.loadState(getFilesDir());  // This operation is very expensive
         questions = getAndFilterQuestions();
         if (questions.isEmpty()) {
             Utils.showLongToast(getApplicationContext(), getResources().getString(R.string.info_no_questions_available));

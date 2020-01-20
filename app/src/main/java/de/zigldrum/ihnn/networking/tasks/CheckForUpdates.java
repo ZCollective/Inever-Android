@@ -7,11 +7,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import de.zigldrum.ihnn.BuildConfig;
@@ -32,12 +32,10 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
 
     private final UpdateMethods app;
     private final Resources resources;
-    private final File filesDir;
 
     public CheckForUpdates(@NonNull UpdateMethods app, @NonNull Context ctx) {
         this.app = app;
         this.resources = ctx.getResources();
-        this.filesDir = ctx.getFilesDir();
     }
 
     @Override
@@ -64,8 +62,10 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
 
             Log.d(LOG_TAG, remotePacks.toString());
 
-            List<ContentPack> availablePacks = app.getState().getPacks();
-            List<ContentPack> packsToSet = new ArrayList<>();
+            AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
+
+            Set<ContentPack> availablePacks = state.getPacks();
+            Set<ContentPack> packsToSet = new HashSet<>();
             for (ContentPack availablePack : availablePacks) {
                 for (ContentPack remotePack : remotePacks) {
                     if (BuildConfig.DEBUG) {
@@ -97,11 +97,12 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
             app.setMainProgressProgress(false, 5);
             app.setInfoText(resources.getString(R.string.info_downloading_updates));
 
-            List<Question> questionsToSet = app.getState().getQuestions()
+            Set<Question> questionsToSet = state.getQuestions()
                     .stream()
                     .filter(q -> remotePacks
-                            .stream().noneMatch(p -> p.getId().intValue() == q.getPackid().intValue()))
-                    .collect(Collectors.toList());
+                            .stream()
+                            .noneMatch(p -> p.getId().intValue() == q.getPackid().intValue()))
+                    .collect(Collectors.toSet());
 
             int totalProgress = 5;
             int progressInc = (90 / remotePacks.size());
@@ -128,9 +129,10 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
             }
             packsToSet.addAll(remotePacks);
             app.setInfoText(resources.getString(R.string.info_storing_updates_to_phone));
-            app.getState().setPacks(packsToSet);
-            app.getState().setQuestions(questionsToSet);
-            if (app.getState().saveState(filesDir)) {
+            state.setPacks(packsToSet);
+            state.setQuestions(questionsToSet);
+
+            if (state.saveState()) {
                 app.setMainProgressProgress(false, 100);
                 Log.i(LOG_TAG, "Saved AppState after Updates!");
                 publishProgress(resources.getString(R.string.info_update_success));
@@ -168,13 +170,10 @@ public class CheckForUpdates extends AsyncTask<Home, String, Boolean> {
 
         void updatesFinished(Boolean result);
 
-        AppState getState();
-
         void showLongToast(String text);
 
         void setMainProgressVisible(boolean isVisible);
 
         void setMainProgressProgress(boolean indeterminate, int progress);
     }
-
 }

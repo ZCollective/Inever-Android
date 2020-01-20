@@ -1,99 +1,148 @@
 package de.zigldrum.ihnn.utils;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import com.opencsv.CSVReaderHeaderAware;
+import com.opencsv.exceptions.CsvValidationException;
+
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.networking.objects.Question;
+import de.zigldrum.ihnn.utils.Constants.ContentPackKeys;
+import de.zigldrum.ihnn.utils.Constants.QuestionKeys;
+import io.paperdb.Paper;
 
-public class AppState implements Serializable {
+public class AppState {
 
-    private static final long serialVersionUID = 2242379700997586835L;
-    private static final String APP_STATE_FILE = "AppState.db";
     private static final String LOG_TAG = "AppState";
 
-    private final List<ContentPack> packs;
-    private final List<Question> questions;
+    private static AppState instance = null;
+
+    private final Set<ContentPack> packs;
+    private final Set<Question> questions;
     private final Set<Integer> disabledPacks;
+    private final Handler handler;
 
-    private boolean initialized;
-    private boolean enableNSFW;
-    private boolean enableAutoUpdates;
     private boolean onlyNSFW;
+    private boolean enableNSFW;
+    private boolean initialized;
+    private boolean enableAutoUpdates;
+    private boolean initializationError;
 
-    public AppState() {
-        this.packs = new ArrayList<>();
-        this.questions = new ArrayList<>();
-        this.disabledPacks = new HashSet<>();
+    private AppState(@Nullable Context ctx) {
+        HandlerThread handlerThread = new HandlerThread("dbThread");
+        handlerThread.start();
+        handler = new Handler(handlerThread.getLooper());
 
-        this.initialized = false;
-        this.enableNSFW = false;
-        this.enableAutoUpdates = true;
-        this.onlyNSFW = false;
+        packs = Paper.book().read("packs", new HashSet<>());
+        onlyNSFW = Paper.book().read("onlyNSFW", false);
+        questions = Paper.book().read("questions", new HashSet<>());
+        enableNSFW = Paper.book().read("enableNSFW", false);
+        initialized = Paper.book().read("initialized", false);
+        disabledPacks = Paper.book().read("disabledPacks", new HashSet<>());
+        enableAutoUpdates = Paper.book().read("enableAutoUpdates", true);
+        initializationError = Paper.book().read("initializationError", false);
+
+        if (!initialized) {
+            if (ctx == null) {
+                throw new IllegalArgumentException();
+            }
+
+            Optional<Throwable> error = initializeAtFirstStart(ctx);
+
+            if (error.isPresent()) {
+                Paper.book().destroy();
+                initializationError = true;
+                Log.w(LOG_TAG, "First Start Failed!", error.get());
+            } else {
+                Log.i(LOG_TAG, "First Start was successful!");
+            }
+        }
     }
 
-    public static AppState loadState(@NonNull File baseDir) {
-        AppState state = null;
-
-        try (ObjectInputStream stateIn = new ObjectInputStream(new FileInputStream(new File(baseDir, APP_STATE_FILE)))) {
-            Log.d(LOG_TAG, "Attempting to parse AppState.");
-            state = (AppState) stateIn.readObject();
-            Log.d(LOG_TAG, "Successfully read AppState.");
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+    public static AppState getInstance(@Nullable Context ctx) throws IllegalArgumentException {
+        if (instance == null) {
+            if (ctx == null) throw new IllegalArgumentException();
+            instance = new AppState(ctx);
         }
 
-        return state;
+        return instance;
     }
 
-    public static boolean isFirstStart(@NonNull File baseDir) {
-        Log.d(LOG_TAG, "Checking if AppState File exists");
+    @NonNull
+    private Optional<Throwable> initializeAtFirstStart(@NonNull Context ctx) {
+        try (CSVReaderHeaderAware packIn = new CSVReaderHeaderAware(
+                new InputStreamReader(ctx.getResources().openRawResource(R.raw.contentpacks)))) {
+            Map<String, String> packMap;
 
-        File[] files = baseDir.listFiles();  // Read files from file-system once for two operations
-        String fileList = Arrays
-                .stream(files)
-                .map(File::getAbsolutePath)
-                .collect(Collectors.toList())
-                .toString();
+            while ((packMap = packIn.readMap()) != null) {
+                String packVersion = packMap.get(ContentPackKeys.VERSION);
+                String packMinAge = packMap.get(ContentPackKeys.MIN_AGE);
+                String packId = packMap.get(ContentPackKeys.ID);
 
-        Log.d(LOG_TAG, "Files: " + fileList);
+                if (packId == null || packVersion == null || packMinAge == null) {
+                    Log.w(LOG_TAG, "Malformed pack, skipping this one");
+                    continue;
+                }
 
-        Optional<File> appFile = Arrays
-                .stream(files)
-                .filter(f -> f.getAbsolutePath().endsWith(APP_STATE_FILE))
-                .findFirst();
+                int version = Integer.parseInt(packVersion);
+                int minAge = Integer.parseInt(packMinAge);
+                int id = Integer.parseInt(packId);
 
-        if (appFile.isPresent()) {
-            File actualFile = appFile.get();
+                String name = packMap.get(ContentPackKeys.NAME);
+                String keywords = packMap.get(ContentPackKeys.KEY_WORDS);
+                String description = packMap.get(ContentPackKeys.DESCRIPTION);
 
-            Log.d(LOG_TAG, "Found file: " + actualFile);
+                ContentPack pack = new ContentPack(id, name, description, keywords, minAge, version);
+                packs.add(pack);
+            }
 
-            String permissions = "Permissions: ";
-            permissions += actualFile.canRead() ? "r/" : "-/";
-            permissions += actualFile.canWrite() ? "w/" : "-/";
-            permissions += actualFile.canExecute() ? "x" : "-";
-
-            Log.d(LOG_TAG, permissions);
-            return false;
-        } else {
-            return true;
+            Log.i(LOG_TAG, "Found " + packs.size() + " Packs!");
+        } catch (IOException | CsvValidationException ioe) {
+            return Optional.of(ioe);
         }
+
+        try (CSVReaderHeaderAware questionIn = new CSVReaderHeaderAware(
+                new InputStreamReader(ctx.getResources().openRawResource(R.raw.questions)))) {
+            Map<String, String> questionMap;
+
+            while ((questionMap = questionIn.readMap()) != null) {
+                String qId = questionMap.get(QuestionKeys.ID);
+                String packIdFk = questionMap.get(QuestionKeys.PACK_ID_FK);
+
+                if (qId == null | packIdFk == null) {
+                    Log.w(LOG_TAG, "Malformed question, skipping this one");
+                    continue;
+                }
+
+                int id = Integer.parseInt(qId);
+                int packID = Integer.parseInt(packIdFk);
+                String string = questionMap.get(QuestionKeys.QUESTION_STRING);
+
+                questions.add(new Question(id, string, packID));
+            }
+
+            Log.i(LOG_TAG, "Found " + questions.size() + " Questions!");
+        } catch (IOException | CsvValidationException ioe) {
+            return Optional.of(ioe);
+        }
+
+        initialized = true;
+        saveState();
+        return Optional.empty();
     }
 
     public boolean getEnableNSFW() {
@@ -120,6 +169,7 @@ public class AppState implements Serializable {
         this.onlyNSFW = onlyNSFW;
     }
 
+    @NonNull
     public Set<Integer> getDisabledPacks() {
         return disabledPacks;
     }
@@ -135,48 +185,42 @@ public class AppState implements Serializable {
         return initialized;
     }
 
-    public void setInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
-
-    public List<ContentPack> getPacks() {
+    @NonNull
+    public Set<ContentPack> getPacks() {
         return packs;
     }
 
-    public void setPacks(List<ContentPack> packs) {
+    public void setPacks(Set<ContentPack> packs) {
         this.packs.clear();
+
         if (packs != null) {
             this.packs.addAll(packs);
         }
     }
 
-    public List<Question> getQuestions() {
+    @NonNull
+    public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(@Nullable Set<Question> questions) {
         this.questions.clear();
+
         if (questions != null) {
             this.questions.addAll(questions);
         }
     }
 
-    public boolean saveState(File baseDir) {
-        try (ObjectOutputStream stateOut = new ObjectOutputStream(new FileOutputStream(new File(baseDir, APP_STATE_FILE)))) {
-            stateOut.writeObject(this);
-
-            String dataDirectory = baseDir.getAbsolutePath();
-            String otherFiles = Arrays.stream(baseDir.listFiles())
-                    .map(File::getAbsolutePath)
-                    .collect(Collectors.toList())
-                    .toString();
-
-            Log.d(LOG_TAG, "Successfully stored AppState to: " + dataDirectory);
-            Log.d(LOG_TAG, "Other files: " + otherFiles);
-            return true;
-        } catch (Exception e) {
-            Log.w(LOG_TAG, "Error when writing AppState!", e);
-            return false;
-        }
+    public boolean saveState() {
+        return handler.post(() -> {
+            Paper.book().write("packs", packs);
+            Paper.book().write("questions", questions);
+            Paper.book().write("disabledPacks", disabledPacks);
+            Paper.book().write("onlyNSFW", onlyNSFW);
+            Paper.book().write("enableNSFW", enableNSFW);
+            Paper.book().write("initialized", initialized);
+            Paper.book().write("enableAutoUpdates", enableAutoUpdates);
+            Paper.book().write("initializationError", initializationError);
+        });
     }
 }

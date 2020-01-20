@@ -12,18 +12,16 @@ import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.utils.AppState;
 
 import static de.zigldrum.ihnn.utils.Constants.SettingsResults.DEFAULT;
-import static de.zigldrum.ihnn.utils.Constants.SettingsResults.STATE_AND_UPDATE;
-import static de.zigldrum.ihnn.utils.Constants.SettingsResults.STATE_CHANGED;
-import static de.zigldrum.ihnn.utils.Constants.SettingsResults.UPDATENOW;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.UPDATE_NOW;
 
 public class Settings extends AppCompatActivity {
 
     private static final String LOG_TAG = "Settings";
 
-    private boolean updateTriggered = false;
-    private boolean stateUpdated = false;
+    private final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
 
-    private AppState state;
+    private boolean stateUpdated = false;
+    private boolean updateTriggered = false;
 
     private Switch nsfwSwitch;
     private Switch nsfwOnlySwitch;
@@ -40,13 +38,7 @@ public class Settings extends AppCompatActivity {
         nsfwSwitch = findViewById(R.id.settings_nsfw);
         nsfwOnlySwitch = findViewById(R.id.settings_nsfw_only);
         autoUpdateSwitch = findViewById(R.id.settings_auto_update);
-    }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        state = AppState.loadState(getFilesDir());  // This operation is very expensive
         nsfwSwitch.setChecked(state.getEnableNSFW());
         nsfwOnlySwitch.setChecked(state.isOnlyNSFW());
         autoUpdateSwitch.setChecked(state.getEnableAutoUpdates());
@@ -86,16 +78,21 @@ public class Settings extends AppCompatActivity {
 
     public void goBack(View v) {
         Log.i(LOG_TAG, "K, thx bai!");
-        this.finish();
+        finish();
     }
 
     @Override
     public void finish() {
-        if (stateUpdated) state.saveState(getFilesDir());
+        if (stateUpdated) {
+            if (state.saveState()) {
+                Log.i(LOG_TAG, "Saving AppState after Updates!");
+            } else {
+                Log.w(LOG_TAG, "Could not save AppState!");
+            }
+        }
+
         Intent data = new Intent();
-        int stateChanged = stateUpdated ? STATE_CHANGED : DEFAULT;
-        int updated = updateTriggered ? UPDATENOW : stateChanged;
-        int resultCode = updateTriggered && stateUpdated ? STATE_AND_UPDATE : updated;
+        int resultCode = updateTriggered ? UPDATE_NOW : DEFAULT;
         setResult(resultCode, data);
         super.finish();
     }
