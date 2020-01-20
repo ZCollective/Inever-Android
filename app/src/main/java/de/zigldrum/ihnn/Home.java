@@ -11,15 +11,19 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import de.zigldrum.ihnn.networking.tasks.CheckForUpdates;
+import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
+import de.zigldrum.ihnn.networking.services.ContentService;
+import de.zigldrum.ihnn.networking.services.RequesterService;
+import de.zigldrum.ihnn.networking.tasks.CheckUpdateResponse;
 import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;
 import io.paperdb.Paper;
+import retrofit2.Call;
 
 import static de.zigldrum.ihnn.utils.Constants.RequestCodes.SETTINGS_REQUEST_CODE;
 
-public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMethods {
+public class Home extends AppCompatActivity implements CheckUpdateResponse.UpdateMethods {
 
     private static final String LOG_TAG = "Home";
 
@@ -98,8 +102,10 @@ public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMet
     }
 
     private void checkForUpdates() {
-        CheckForUpdates checkForUpdatesTask = new CheckForUpdates(this, this);
-        checkForUpdatesTask.execute();
+        ContentService backendConn = RequesterService.getContentService();
+        Call<ContentPackResponse> request = backendConn.getPacks();
+        CheckUpdateResponse responseChecker = new CheckUpdateResponse(this, this);
+        request.enqueue(responseChecker);
     }
 
     /*
@@ -107,7 +113,7 @@ public class Home extends AppCompatActivity implements CheckForUpdates.UpdateMet
      */
 
     @Override
-    public void updatesFinished(@NonNull Boolean success) {
+    public void updatesFinished(boolean success) {
         if (success) {
             Log.d(LOG_TAG, "Updates have finished! Can continue with program as normal.");
         } else {
