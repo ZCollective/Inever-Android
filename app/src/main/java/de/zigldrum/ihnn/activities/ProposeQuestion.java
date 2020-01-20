@@ -1,7 +1,6 @@
 package de.zigldrum.ihnn.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,11 +16,6 @@ import de.zigldrum.ihnn.utils.Utils;
 import retrofit2.Call;
 
 public class ProposeQuestion extends AppCompatActivity implements CheckProposalResponse.ProposalResponseMethods {
-
-    private static final String LOG_TAG = "ProposeQuestion";
-
-    public String questionString;
-    public String senderName;
 
     private EditText string;
     private EditText sender;
@@ -40,10 +34,8 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
     }
 
     public void sendProposal(View v) {
-        Log.d(LOG_TAG, "Currently a stub!");
-
-        questionString = string.getText().toString();
-        senderName = sender.getText().toString();
+        String questionString = string.getText().toString();
+        String senderName = sender.getText().toString();
 
         ContentService backendConn = RequesterService.getContentService();
         ProposalRequestBody requestBody = new ProposalRequestBody(questionString, senderName);

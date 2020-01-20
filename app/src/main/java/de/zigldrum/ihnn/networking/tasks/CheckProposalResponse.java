@@ -13,9 +13,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Andreas Knipl <Andreas.Knipl@medicospeaker.com>
- */
 public class CheckProposalResponse implements Callback<ProposalResponse> {
 
     private static final String LOG_TAG = "CheckProposalResponse";

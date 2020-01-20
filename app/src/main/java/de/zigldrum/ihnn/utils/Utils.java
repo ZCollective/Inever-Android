@@ -24,10 +24,6 @@ public class Utils {
         Toast.makeText(context, text, Toast.LENGTH_LONG).show();
     }
 
-    public static void showShortToast(Context context, String text) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-    }
-
     public static void setMainProgressVisible(@NonNull Activity activity, boolean isVisible) {
         ProgressBar progressBar = activity.findViewById(R.id.main_progress);
         if (progressBar == null) {

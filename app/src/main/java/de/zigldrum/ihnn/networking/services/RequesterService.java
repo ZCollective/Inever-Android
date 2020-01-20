@@ -13,7 +13,6 @@ public class RequesterService {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BuildConfig.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    //.client(builder.build())
                     .build();
             contentService = retrofit.create(ContentService.class);
         }
