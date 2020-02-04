@@ -25,7 +25,10 @@
     <string name="proposal_name">Dein Name (Optional)</string>
     <string name="proposal_send">Senden</string>
     <string name="proposal_string_hint">Trage deinen Vorschlag hier ein!</string>
+    <string name="proposal_string_empty">Vorschlag darf nicht leer sein!</string>
     <string name="info_server_down">Konnte Server nicht erreichen</string>
     <string name="info_proposal_sent_success">Vorschlag wurde an Server übertragen!</string>
     <string name="info_update_success">Inhalte wurden auf die letzte Version aktualisiert!</string>
+    <string name="content_packs">Fragenpakete</string>
+    <string name="info_contact_developer">Konnte das Problem nicht lösen. Bitte kontaktiere den Entwickler!</string>
 </resources>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#943A58</color>
-    <color name="background">#61AA9F</color>
+    <color name="colorPrimary">#61aa9f</color>
+    <color name="colorPrimaryDark">#307b71</color>
+    <color name="colorPrimaryLight">#92dcd0</color>
+    <color name="colorAccent">#616161</color>
     <color name="btn_color">#6F6E6E</color>
-    <color name="btn_color_lighten">#979797</color>
     <color name="btn_text">#FFFFFF</color>
-    <color name="text_color">#616161</color>
-    <color name="background_lighten">#78BDB1</color>
-    <color name="ic_launcher_background">#329E9F</color>
-    <color name="ihnn_logo_background">#26A69A</color>
+    <color name="text_color">#000000</color>
+    <color name="progress_normal">#1B3992</color>
+    <color name="progress_indeterminate">#DB1414</color>
 </resources>

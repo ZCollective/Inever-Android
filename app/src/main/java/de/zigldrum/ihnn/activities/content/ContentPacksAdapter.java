@@ -1,5 +1,6 @@
 package de.zigldrum.ihnn.activities.content;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,36 +13,55 @@ import java.util.Collection;
 import java.util.List;
 
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.activities.ContentPacks;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
+import de.zigldrum.ihnn.utils.AppState;
 
 public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHolder> {
 
-    private final List<ContentPack> packs;
-    private final ContentPacks app;
+    private static final String LOG_TAG = "ContentPacksAdapter";
 
-    public ContentPacksAdapter(@NonNull Collection<ContentPack> packs, @NonNull ContentPacks app) {
+    private final List<ContentPack> packs;
+    private final PackSwitchCallback app;
+    private final AppState state = AppState.getInstance(null);
+
+    public ContentPacksAdapter(@NonNull Collection<ContentPack> packs, @NonNull PackSwitchCallback app) {
         this.packs = new ArrayList<>(packs);
         this.app = app;
     }
 
     @NonNull
     @Override
-    public ContentPacksViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public ContentPacksViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         // create a new view
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.recycler_contentpack_row, viewGroup, false);
+                                  .inflate(R.layout.recycler_contentpack_row, viewGroup, false);
 
-        return new ContentPacksViewHolder(view, app);
+        return new ContentPacksViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContentPacksViewHolder viewHolder, int i) {
-        ContentPack cp = packs.get(i);
+    public void onBindViewHolder(@NonNull ContentPacksViewHolder viewHolder, int position) {
+        ContentPack cp = packs.get(position);
+        final int id = cp.getId();
+
         viewHolder.name.setText(cp.getName());
         viewHolder.description.setText(cp.getDescription());
-        viewHolder.id.setText(String.valueOf(cp.getId()));
-        viewHolder.toggleSwitch.setChecked(!app.state.getDisabledPacks().contains(cp.getId()));
+        viewHolder.toggleSwitch.setChecked(!state.getDisabledPacks().contains(id));
+        viewHolder.toggleSwitch.setOnCheckedChangeListener((view, checked) -> {
+            if (checked) {
+                Log.d(LOG_TAG, "Enabling Pack: id=" + id);
+                state.getDisabledPacks().remove(id);
+            } else {
+                Log.d(LOG_TAG, "Disabling Pack: id=" + id);
+                state.getDisabledPacks().add(id);
+            }
+
+            app.setStateUpdated();
+        });
+    }
+
+    public interface PackSwitchCallback {
+        void setStateUpdated();
     }
 
     @Override

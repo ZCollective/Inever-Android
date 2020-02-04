@@ -1,79 +1,56 @@
 package de.zigldrum.ihnn.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Switch;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import de.zigldrum.ihnn.R;
+import de.zigldrum.ihnn.activities.content.SettingsAdapter;
 import de.zigldrum.ihnn.utils.AppState;
+import de.zigldrum.ihnn.utils.Constants;
+import de.zigldrum.ihnn.R;
+import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 
 import static de.zigldrum.ihnn.utils.Constants.SettingsResults.DEFAULT;
 import static de.zigldrum.ihnn.utils.Constants.SettingsResults.UPDATE_NOW;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements SettingsAdapter.SettingsSwitchCallback {
 
     private static final String LOG_TAG = "Settings";
-
-    private final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
 
     private boolean stateUpdated = false;
     private boolean updateTriggered = false;
 
-    private Switch nsfwSwitch;
-    private Switch nsfwOnlySwitch;
-    private Switch autoUpdateSwitch;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Log.i(LOG_TAG, "Settings was created!");
-        Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
+        Log.i(LOG_TAG, "Running Settings::onCreate()");
 
-        nsfwSwitch = findViewById(R.id.settings_nsfw);
-        nsfwOnlySwitch = findViewById(R.id.settings_nsfw_only);
-        autoUpdateSwitch = findViewById(R.id.settings_auto_update);
+        RecyclerView rView = findViewById(R.id.settings_list_view);
 
-        nsfwSwitch.setChecked(state.getEnableNSFW());
-        nsfwOnlySwitch.setChecked(state.isOnlyNSFW());
-        autoUpdateSwitch.setChecked(state.getEnableAutoUpdates());
-    }
+        // Performance improvement
+        rView.setHasFixedSize(true);
 
-    public void toggleNSFW(View v) {
-        boolean newValue = nsfwSwitch.isChecked();
-        if (newValue != state.getEnableNSFW()) {
-            state.setEnableNSFW(newValue);
-            stateUpdated = true;
-        }
-        Log.i(LOG_TAG, "NSFW is " + (nsfwSwitch.isChecked() ? "enabled" : "disabled"));
-    }
+        // Using linear layout
+        rView.setLayoutManager(new LinearLayoutManager(this));
 
-    public void toggleAutoUpdate(View v) {
-        boolean newValue = autoUpdateSwitch.isChecked();
-        if (newValue != state.getEnableAutoUpdates()) {
-            state.setEnableAutoUpdates(newValue);
-            stateUpdated = true;
-        }
-        Log.i(LOG_TAG, "Auto Updates are " + (autoUpdateSwitch.isChecked() ? "enabled" : "disabled"));
-    }
+        // Setting adapter class
+        rView.setAdapter(new SettingsAdapter(this));
 
-    public void toggleNSFWOnlyMode(View v) {
-        boolean newValue = nsfwOnlySwitch.isChecked();
-        if (newValue != state.isOnlyNSFW()) {
-            state.setOnlyNSFW(newValue);
-            stateUpdated = true;
-        }
-        Log.i(LOG_TAG, "NSFW Only mode is " + (nsfwOnlySwitch.isChecked() ? "enabled" : "disabled"));
+        // Add divider between elements
+        rView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     public void updateNow(View v) {
         updateTriggered = true;
-        this.finish();
+        finish();
     }
 
     public void goBack(View v) {
@@ -83,17 +60,22 @@ public class Settings extends AppCompatActivity {
 
     @Override
     public void finish() {
+        Log.i(LOG_TAG, "Running Settings::finish()");
+
         if (stateUpdated) {
-            if (state.saveState()) {
+            if (AppState.getInstance(null).saveState()) {
                 Log.i(LOG_TAG, "Saving AppState after Updates!");
             } else {
                 Log.w(LOG_TAG, "Could not save AppState!");
             }
         }
 
-        Intent data = new Intent();
-        int resultCode = updateTriggered ? UPDATE_NOW : DEFAULT;
-        setResult(resultCode, data);
+        setResult(updateTriggered ? SettingsResults.UPDATE_NOW : SettingsResults.DEFAULT);
         super.finish();
+    }
+
+    @Override
+    public void setStateUpdated() {
+        stateUpdated = true;
     }
 }

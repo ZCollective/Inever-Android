@@ -24,9 +24,13 @@
     <string name="proposal_name">Your name (Optional)</string>
     <string name="proposal_send">Send</string>
     <string name="proposal_string_hint">Enter your Proposal here!</string>
+    <string name="proposal_string_empty">Proposed question cannot be empty!</string>
     <string name="info_server_down">Could not connect to Server…</string>
     <string name="info_proposal_sent_success">Proposal was sent to Server!</string>
     <string name="info_update_success">Content was updates to the latest versions!</string>
+    <string name="content_packs">Content-Packs</string>
+    <string name="info_contact_developer">Could not fix the problem. Please contact the developer!</string>
     <string name="contentpackname" translatable="false">contentpackname</string>
     <string name="contentpackdesc" translatable="false">contentpackdesc</string>
+    <string name="settinglinetext" translatable="false">settinglinetext</string>
 </resources>
