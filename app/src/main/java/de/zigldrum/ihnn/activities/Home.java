@@ -44,7 +44,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         progressBar = findViewById(R.id.main_progress);
 
         Paper.init(this);
-        state = AppState.getInstance(this);  // First invocation, needs context!
+        state = AppState.getInstance();
 
         Utils.setMainProgressVisible(this, true);
         setMainProgressProgress(true, 0);
@@ -103,7 +103,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     }
 
     private void checkForUpdates() {
-        ContentService backendConn = RequesterService.getContentService();
+        ContentService backendConn = RequesterService.getInstance();
         Call<ContentPackResponse> request = backendConn.getPacks();
         CheckUpdateResponse responseChecker = new CheckUpdateResponse(this, this);
         request.enqueue(responseChecker);

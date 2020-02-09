@@ -37,7 +37,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
         String questionString = string.getText().toString();
         String senderName = sender.getText().toString();
 
-        ContentService backendConn = RequesterService.getContentService();
+        ContentService backendConn = RequesterService.getInstance();
         ProposalRequestBody requestBody = new ProposalRequestBody(questionString, senderName);
         Call<ProposalResponse> request = backendConn.proposeQuestion(requestBody);
         CheckProposalResponse responseChecker = new CheckProposalResponse(this, this);

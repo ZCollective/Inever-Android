@@ -18,7 +18,7 @@ public class Settings extends AppCompatActivity {
 
     private static final String LOG_TAG = "Settings";
 
-    private final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
+    private final AppState state = AppState.getInstance();
 
     private boolean stateUpdated = false;
     private boolean updateTriggered = false;
