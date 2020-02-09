@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ihnn_logo"
         android:label="@string/app_name"
@@ -16,10 +17,13 @@
         <activity android:name=".activities.Settings" />
         <activity android:name=".activities.ContentPacks" />
         <activity android:name=".activities.Game" />
-        <activity android:name=".Home">
+        <activity android:name=".activities.Home" />
+        <activity
+            android:name=".activities.SplashScreen"
+            android:label="@string/app_name"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

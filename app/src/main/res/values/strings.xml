@@ -27,6 +27,7 @@
     <string name="info_server_down">Could not connect to Server…</string>
     <string name="info_proposal_sent_success">Proposal was sent to Server!</string>
     <string name="info_update_success">Content was updates to the latest versions!</string>
+    <string name="info_contact_developer">Could not fix the problem. Please contact the developer!</string>
     <string name="contentpackname" translatable="false">contentpackname</string>
     <string name="contentpackdesc" translatable="false">contentpackdesc</string>
 </resources>

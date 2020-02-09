@@ -1,4 +1,4 @@
-package de.zigldrum.ihnn;
+package de.zigldrum.ihnn.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
 import de.zigldrum.ihnn.networking.services.ContentService;
 import de.zigldrum.ihnn.networking.services.RequesterService;
 import de.zigldrum.ihnn.networking.tasks.CheckUpdateResponse;
+import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;

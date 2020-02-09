@@ -28,4 +28,5 @@
     <string name="info_server_down">Konnte Server nicht erreichen</string>
     <string name="info_proposal_sent_success">Vorschlag wurde an Server übertragen!</string>
     <string name="info_update_success">Inhalte wurden auf die letzte Version aktualisiert!</string>
+    <string name="info_contact_developer">Could not fix the problem. Please contact the developer!</string>
 </resources>
