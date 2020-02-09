@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +18,7 @@ import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.utils.AppState;
 
-public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHolder> {
+public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksAdapter.ContentPacksViewHolder> {
 
     private static final String LOG_TAG = "ContentPacksAdapter";
 
@@ -60,12 +62,27 @@ public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksViewHo
         });
     }
 
-    public interface PackSwitchCallback {
-        void setStateUpdated();
-    }
-
     @Override
     public int getItemCount() {
         return packs.size();
+    }
+
+    public interface PackSwitchCallback {
+        void setStateUpdated();
+
+    }
+
+    static class ContentPacksViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView description;
+        private final TextView name;
+        private final Switch toggleSwitch;
+
+        ContentPacksViewHolder(@NonNull View view) {
+            super(view);
+            name = view.findViewById(R.id.rec_packs_name);
+            description = view.findViewById(R.id.rec_packs_desc);
+            toggleSwitch = view.findViewById(R.id.rec_packs_enable);
+        }
     }
 }

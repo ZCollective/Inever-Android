@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -12,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.R;
 
-public class SettingsAdapter extends RecyclerView.Adapter<SettingsLineViewHolder> {
+public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.SettingsLineViewHolder> {
 
     private static final String LOG_TAG = "SettingsAdapter";
 
@@ -28,7 +30,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsLineViewHolder
     public SettingsLineViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         // create a new view
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.recycler_settings_row, viewGroup, false);
+                                  .inflate(R.layout.recycler_settings_row, viewGroup, false);
 
         return new SettingsLineViewHolder(view);
     }
@@ -78,5 +80,17 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsLineViewHolder
 
     public interface SettingsSwitchCallback {
         void setStateUpdated();
+    }
+
+    static class SettingsLineViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView text;
+        private final Switch toggleSwitch;
+
+        SettingsLineViewHolder(@NonNull View view) {
+            super(view);
+            text = view.findViewById(R.id.rec_settings_text);
+            toggleSwitch = view.findViewById(R.id.rec_settings_switch);
+        }
     }
 }
