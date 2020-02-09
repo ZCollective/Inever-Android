@@ -12,11 +12,15 @@
         android:roundIcon="@mipmap/ihnn_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.ProposeQuestion" />
+        <activity
+            android:name=".activities.ProposeQuestion"
+            android:windowSoftInputMode="stateUnspecified|adjustResize" />
         <activity android:name=".activities.Settings" />
         <activity android:name=".activities.ContentPacks" />
         <activity android:name=".activities.Game" />
-        <activity android:name=".Home">
+        <activity
+            android:name=".Home"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
