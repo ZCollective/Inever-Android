@@ -48,6 +48,7 @@ public class Constants {
     @Retention(RetentionPolicy.SOURCE)
     public @interface RequestCodes {
         int SETTINGS_REQUEST_CODE = 0;
+        int GAME_REQUEST_CODE = 1;
     }
 
     @IntDef({SettingsResults.DEFAULT, SettingsResults.UPDATE_NOW})
@@ -55,5 +56,12 @@ public class Constants {
     public @interface SettingsResults {
         int DEFAULT = 0;
         int UPDATE_NOW = 1;
+    }
+
+    @IntDef({GameResults.GAME_DEFAULT, GameResults.GAME_QUESTIONS_EMPTY})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface GameResults {
+        int GAME_DEFAULT = 0;
+        int GAME_QUESTIONS_EMPTY = 1;
     }
 }

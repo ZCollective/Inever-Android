@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
@@ -21,6 +22,8 @@ import de.zigldrum.ihnn.utils.Utils;
 import io.paperdb.Paper;
 import retrofit2.Call;
 
+import static de.zigldrum.ihnn.utils.Constants.*;
+import static de.zigldrum.ihnn.utils.Constants.RequestCodes.GAME_REQUEST_CODE;
 import static de.zigldrum.ihnn.utils.Constants.RequestCodes.SETTINGS_REQUEST_CODE;
 
 public class Home extends AppCompatActivity implements CheckUpdateResponse.UpdateMethods {
@@ -75,7 +78,24 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         Log.i(LOG_TAG, "Resuming Home activity!");
     }
 
-    private void evalSettingsRequest(int resultCode) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case SETTINGS_REQUEST_CODE:
+                evalSettingsResponse(resultCode);
+                break;
+            case GAME_REQUEST_CODE:
+                evalGameResponse(resultCode);
+                break;
+            default:
+                Log.d(LOG_TAG, "Unknown: request-code=" + requestCode + ", result-code=" + resultCode);
+                break;
+        }
+    }
+
+    private void evalSettingsResponse(int resultCode) {
         switch (resultCode) {
             case SettingsResults.DEFAULT:
                 Log.d(LOG_TAG, "Got 0 from Settings -> Doing nothing.");
@@ -90,14 +110,18 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == SETTINGS_REQUEST_CODE) {
-            evalSettingsRequest(resultCode);
-        } else {
-            Log.d(LOG_TAG, "Unknown request code: " + requestCode);
+    private void evalGameResponse(int resultCode) {
+        switch (resultCode) {
+            case GameResults.GAME_DEFAULT:
+                Log.d(LOG_TAG, "Got 0 from Game -> Doing nothing.");
+                break;
+            case GameResults.GAME_QUESTIONS_EMPTY:
+                Log.d(LOG_TAG, "Got 1 from Game -> Displaying Error-Toast!");
+                showLongToast(getString(R.string.info_no_questions_available));
+                break;
+            default:
+                Log.w(LOG_TAG, "Got undefined result-code from Game!");
+                break;
         }
     }
 
@@ -155,7 +179,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
      */
 
     public void startGame(View v) {
-        startActivity(Utils.startGame(this));
+        startActivityForResult(Utils.startGame(this), GAME_REQUEST_CODE);
     }
 
     public void openSettings(View v) {
