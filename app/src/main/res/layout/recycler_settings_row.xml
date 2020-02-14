@@ -8,36 +8,24 @@
     app:layout_optimizationLevel="chains">
 
     <TextView
-        android:id="@+id/rec_packs_name"
+        android:id="@+id/rec_settings_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:hint="@string/contentpackname"
+        android:hint="@string/settinglinetext"
         android:textColor="@color/text_color"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/rec_packs_desc"
-        app:layout_constraintEnd_toStartOf="@+id/rec_packs_enable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rec_settings_switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/rec_packs_desc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:hint="@string/contentpackdesc"
-        android:textColor="@color/text_color"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/rec_packs_enable"
-        app:layout_constraintStart_toStartOf="@+id/rec_packs_name"
-        app:layout_constraintTop_toBottomOf="@+id/rec_packs_name" />
-
     <Switch
-        android:id="@+id/rec_packs_enable"
+        android:id="@+id/rec_settings_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rec_packs_desc"
+        app:layout_constraintBottom_toBottomOf="@+id/rec_settings_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rec_packs_name" />
+        app:layout_constraintTop_toTopOf="@+id/rec_settings_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

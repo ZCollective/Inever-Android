@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +18,9 @@ import de.zigldrum.ihnn.activities.content.ContentPacksAdapter;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
 import de.zigldrum.ihnn.utils.AppState;
 
-public class ContentPacks extends AppCompatActivity {
+import static androidx.recyclerview.widget.DividerItemDecoration.VERTICAL;
+
+public class ContentPacks extends AppCompatActivity implements ContentPacksAdapter.PackSwitchCallback {
 
     private static final String LOG_TAG = "ContentPacks";
 
@@ -51,22 +54,18 @@ public class ContentPacks extends AppCompatActivity {
 
         // Setting adapter class
         rView.setAdapter(new ContentPacksAdapter(packs, this));
+
+        // Add divider between elements
+        rView.addItemDecoration(new DividerItemDecoration(this, VERTICAL));
     }
 
     public void goBack(View v) {
         finish();
     }
 
-    public void enablePack(Integer id) {
+    @Override
+    public void setStateUpdated() {
         this.updated = true;
-        Log.d(LOG_TAG, "Enabling Pack: " + id);
-        state.getDisabledPacks().remove(id);
-    }
-
-    public void disablePack(Integer id) {
-        this.updated = true;
-        Log.d(LOG_TAG, "Disabling Pack: " + id);
-        state.getDisabledPacks().add(id);
     }
 
     @Override
