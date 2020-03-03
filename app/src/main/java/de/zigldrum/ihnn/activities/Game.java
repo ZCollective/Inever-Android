@@ -27,7 +27,7 @@ public class Game extends AppCompatActivity {
 
     private static final String LOG_TAG = "Game";
 
-    private final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated;
+    private final AppState state = AppState.getInstance();
 
     private volatile Iterator<Question> questionIterator;
     private volatile List<Question> questions = new ArrayList<>();

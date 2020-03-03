@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,10 +58,7 @@ public class AppState {
         initializationError = Paper.book().read("initializationError", false);
 
         if (!initialized) {
-            if (ctx == null) {
-                throw new IllegalArgumentException();
-            }
-
+            Objects.requireNonNull(ctx);
             Optional<Throwable> error = initializeAtFirstStart(ctx);
 
             if (error.isPresent()) {
@@ -73,12 +71,12 @@ public class AppState {
         }
     }
 
-    public static AppState getInstance(@Nullable Context ctx) throws IllegalArgumentException {
-        if (instance == null) {
-            if (ctx == null) throw new IllegalArgumentException();
-            instance = new AppState(ctx);
-        }
+    public static boolean init(@NonNull Context ctx) {
+        instance = new AppState(ctx);
+        return !instance.initializationError && instance.initialized;
+    }
 
+    public static AppState getInstance() {
         return instance;
     }
 

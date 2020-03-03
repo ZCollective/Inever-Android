@@ -24,7 +24,7 @@ public class ContentPacks extends AppCompatActivity implements ContentPacksAdapt
 
     private static final String LOG_TAG = "ContentPacks";
 
-    public final AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
+    public final AppState state = AppState.getInstance();
 
     private boolean updated = false;
 

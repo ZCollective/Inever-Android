@@ -72,7 +72,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         Log.d(LOG_TAG, remotePacks.toString());
 
-        AppState state = AppState.getInstance(null);  // null allowed -> should already be instantiated
+        AppState state = AppState.getInstance();
 
         Set<ContentPack> availablePacks = state.getPacks();
         Set<ContentPack> packsToSet = new HashSet<>();
@@ -122,7 +122,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         for (ContentPack newPack : remotePacks) {
 
             try {
-                Call<QuestionResponse> questionRequest = RequesterService.getContentService().getQuestions(newPack.getId());
+                Call<QuestionResponse> questionRequest = RequesterService.getInstance().getQuestions(newPack.getId());
                 QuestionResponse qr = questionRequest.execute().body();
 
                 if (qr == null) {

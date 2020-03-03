@@ -12,16 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import de.zigldrum.ihnn.activities.content.SettingsAdapter;
 import de.zigldrum.ihnn.utils.AppState;
-import de.zigldrum.ihnn.utils.Constants;
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
-
-import static de.zigldrum.ihnn.utils.Constants.SettingsResults.DEFAULT;
-import static de.zigldrum.ihnn.utils.Constants.SettingsResults.UPDATE_NOW;
 
 public class Settings extends AppCompatActivity implements SettingsAdapter.SettingsSwitchCallback {
 
     private static final String LOG_TAG = "Settings";
+
+    private final AppState state = AppState.getInstance();
 
     private boolean stateUpdated = false;
     private boolean updateTriggered = false;
@@ -63,7 +61,7 @@ public class Settings extends AppCompatActivity implements SettingsAdapter.Setti
         Log.i(LOG_TAG, "Running Settings::finish()");
 
         if (stateUpdated) {
-            if (AppState.getInstance(null).saveState()) {
+            if (state.saveState()) {
                 Log.i(LOG_TAG, "Saving AppState after Updates!");
             } else {
                 Log.w(LOG_TAG, "Could not save AppState!");
