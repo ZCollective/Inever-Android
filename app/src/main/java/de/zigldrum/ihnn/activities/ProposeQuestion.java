@@ -77,7 +77,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
             // This enables us to send multiple proposals after each other
             AsyncTask.SERIAL_EXECUTOR.execute(() -> {
                 // Make Backend-Request
-                ContentService backendConn = RequesterService.getContentService();
+                ContentService backendConn = RequesterService.getInstance();
                 ProposalRequestBody requestBody = new ProposalRequestBody(questionString, senderName);
                 Call<ProposalResponse> request = backendConn.proposeQuestion(requestBody);
                 CheckProposalResponse responseChecker = new CheckProposalResponse(this, this);

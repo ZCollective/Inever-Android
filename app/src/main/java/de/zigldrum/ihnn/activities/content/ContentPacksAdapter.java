@@ -24,7 +24,7 @@ public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksAdapte
 
     private final List<ContentPack> packs;
     private final PackSwitchCallback app;
-    private final AppState state = AppState.getInstance(null);
+    private final AppState state = AppState.getInstance();
 
     public ContentPacksAdapter(@NonNull Collection<ContentPack> packs, @NonNull PackSwitchCallback app) {
         this.packs = new ArrayList<>(packs);

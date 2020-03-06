@@ -19,7 +19,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
     private static final String LOG_TAG = "SettingsAdapter";
 
     private final SettingsSwitchCallback app;
-    private final AppState state = AppState.getInstance(null);
+    private final AppState state = AppState.getInstance();
 
     public SettingsAdapter(@NonNull SettingsSwitchCallback app) {
         this.app = app;
