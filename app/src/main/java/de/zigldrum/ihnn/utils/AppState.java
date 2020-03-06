@@ -1,8 +1,7 @@
 package de.zigldrum.ihnn.utils;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -18,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
 
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.networking.objects.ContentPack;
@@ -35,7 +35,6 @@ public class AppState {
     private final Set<ContentPack> packs;
     private final Set<Question> questions;
     private final Set<Integer> disabledPacks;
-    private final Handler handler;
 
     private boolean onlyNSFW;
     private boolean enableNSFW;
@@ -43,11 +42,7 @@ public class AppState {
     private boolean enableAutoUpdates;
     private boolean initializationError;
 
-    private AppState(@Nullable Context ctx) {
-        HandlerThread handlerThread = new HandlerThread("dbThread");
-        handlerThread.start();
-        handler = new Handler(handlerThread.getLooper());
-
+    private AppState(@NonNull Context ctx) throws NullPointerException {
         packs = Paper.book().read("packs", new HashSet<>());
         onlyNSFW = Paper.book().read("onlyNSFW", false);
         questions = Paper.book().read("questions", new HashSet<>());
@@ -210,15 +205,24 @@ public class AppState {
     }
 
     public boolean saveState() {
-        return handler.post(() -> {
-            Paper.book().write("packs", packs);
-            Paper.book().write("questions", questions);
-            Paper.book().write("disabledPacks", disabledPacks);
-            Paper.book().write("onlyNSFW", onlyNSFW);
-            Paper.book().write("enableNSFW", enableNSFW);
-            Paper.book().write("initialized", initialized);
-            Paper.book().write("enableAutoUpdates", enableAutoUpdates);
-            Paper.book().write("initializationError", initializationError);
-        });
+        try {
+            AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+                Paper.book()
+                     .write("packs", packs)
+                     .write("questions", questions)
+                     .write("disabledPacks", disabledPacks)
+                     .write("onlyNSFW", onlyNSFW)
+                     .write("enableNSFW", enableNSFW)
+                     .write("initialized", initialized)
+                     .write("enableAutoUpdates", enableAutoUpdates)
+                     .write("initializationError", initializationError);
+                Log.d(LOG_TAG, "Done saving!");
+            });
+        } catch (RejectedExecutionException | NullPointerException e) {
+            Log.w(LOG_TAG, "Cannot execute save-state task! See attached stack-trace!", e);
+            return false;
+        }
+
+        return true;
     }
 }
