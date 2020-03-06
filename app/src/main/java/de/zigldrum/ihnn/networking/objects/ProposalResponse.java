@@ -2,23 +2,17 @@ package de.zigldrum.ihnn.networking.objects;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ProposalResponse {
 
-    private final static long serialVersionUID = -7943671069202319658L;
-
     @SerializedName("success")
-    @Expose
     private Boolean success;
 
     @SerializedName("error")
-    @Expose
     private Boolean error;
 
     @SerializedName("msg")
-    @Expose
     private String msg;
 
     @NonNull

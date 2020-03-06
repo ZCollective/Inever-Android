@@ -2,37 +2,26 @@ package de.zigldrum.ihnn.networking.objects;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-public class ContentPack implements Serializable {
-
-    private final static long serialVersionUID = 1L;
+public class ContentPack {
 
     @SerializedName("id")
-    @Expose
     private Integer id;
 
     @SerializedName("name")
-    @Expose
     private String name;
 
     @SerializedName("description")
-    @Expose
     private String description;
 
     @SerializedName("keywords")
-    @Expose
     private String keywords;
 
     @SerializedName("min_age")
-    @Expose
     private Integer minAge;
 
     @SerializedName("version")
-    @Expose
     private Integer version;
 
     public ContentPack() {
@@ -102,7 +91,7 @@ public class ContentPack implements Serializable {
     @Override
     public String toString() {
         return "\n------------------------------------------\n" +
-                "ID: " + id + "\n" +
+                "CP_ID: " + id + "\n" +
                 "Name: " + name + "\n" +
                 "Descr.: " + description + "\n" +
                 "Keywords: " + keywords + "\n" +

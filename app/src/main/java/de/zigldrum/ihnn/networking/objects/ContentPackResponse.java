@@ -2,25 +2,19 @@ package de.zigldrum.ihnn.networking.objects;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class ContentPackResponse {
 
-    private final static long serialVersionUID = -7943671069202319658L;
-
     @SerializedName("success")
-    @Expose
     private Boolean success;
 
     @SerializedName("error")
-    @Expose
     private Boolean error;
 
     @SerializedName("msg")
-    @Expose
     private List<ContentPack> msg = null;
 
     @NonNull

@@ -1,25 +1,18 @@
 package de.zigldrum.ihnn.networking.objects;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class Question implements Serializable {
-
-    private static final long serialVersionUid = 1L;
+public class Question {
 
     @SerializedName("id")
-    @Expose
     private Integer id;
 
     @SerializedName("string")
-    @Expose
     private String string;
 
     @SerializedName("packid")
-    @Expose
     private Integer packid;
 
     public Question() {
