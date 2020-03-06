@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.activities.ContentPacks;
@@ -20,8 +22,21 @@ public class Utils {
 
     private static final String LOG_TAG = "Utils";
 
-    public static void showLongToast(@NonNull Context context, @NonNull String text) {
-        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+    @Nullable
+    public static <T> Snackbar showLongSnackbar(@NonNull Activity activity, @NonNull T text) {
+        Snackbar result = null;
+
+        if (text instanceof CharSequence) {
+            View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            result = Snackbar.make(rootView, (CharSequence) text, Snackbar.LENGTH_LONG);
+            result.show();
+        } else if (text instanceof Integer) {
+            View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            result = Snackbar.make(rootView, (Integer) text, Snackbar.LENGTH_LONG);
+            result.show();
+        }
+
+        return result;
     }
 
     public static void setMainProgressVisible(@NonNull Activity activity, boolean isVisible) {

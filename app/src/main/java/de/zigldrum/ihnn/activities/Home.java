@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
 import de.zigldrum.ihnn.networking.services.ContentService;
 import de.zigldrum.ihnn.networking.services.RequesterService;
@@ -31,10 +33,9 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     private static final String LOG_TAG = "Home";
 
-    public AppState state;
-
-    private TextView info;
     private ProgressBar progressBar;
+    private Snackbar snackbar;
+    private TextView info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,6 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         progressBar = findViewById(R.id.main_progress);
 
         Paper.init(this);
-        state = AppState.getInstance();
 
         Utils.setMainProgressVisible(this, true);
         setMainProgressProgress(true, 0);
@@ -59,14 +59,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
         Log.d(LOG_TAG, "Running Home onPostCreate...");
 
-        if (!state.isInitialized()) {
-            Utils.showLongToast(this, "Could not fix the problem. Please contact the dev!");
-            return;
-        }
-
-        Log.i(LOG_TAG, "Commencing Normal Startup...");
-
-        if (state.getEnableAutoUpdates()) {
+        if (AppState.getInstance().getEnableAutoUpdates()) {
             checkForUpdates();
         } else {
             Utils.setMainProgressVisible(this, false);
@@ -118,7 +111,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
                 break;
             case GameResults.GAME_QUESTIONS_EMPTY:
                 Log.d(LOG_TAG, "Got 1 from Game -> Displaying Error-Toast!");
-                showLongToast(getString(R.string.info_no_questions_available));
+                showLongSnackbar(getString(R.string.info_no_questions_available));
                 break;
             default:
                 Log.w(LOG_TAG, "Got undefined result-code from Game!");
@@ -131,6 +124,13 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         Call<ContentPackResponse> request = backendConn.getPacks();
         CheckUpdateResponse responseChecker = new CheckUpdateResponse(this, this);
         request.enqueue(responseChecker);
+    }
+
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 
     /*
@@ -152,8 +152,11 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     }
 
     @Override
-    public void showLongToast(@NonNull String text) {
-        Utils.showLongToast(this, text);
+    public <T> void showLongSnackbar(@NonNull T text) {
+        runOnUiThread(() -> {
+            dismissSnackbar();
+            snackbar = Utils.showLongSnackbar(this, text);
+        });
     }
 
     @Override

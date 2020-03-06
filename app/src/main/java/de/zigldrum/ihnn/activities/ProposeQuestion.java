@@ -6,9 +6,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
@@ -28,6 +30,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
 
     private TextInputLayout string;
     private TextInputLayout sender;
+    private Snackbar snackbar;
     private String errorEmptyProposal;
 
     @Override
@@ -98,8 +101,18 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
     }
 
     @Override
-    public void notifyUser(String message) {
-        Utils.showLongToast(getApplicationContext(), message);
+    public <T> void notifyUser(@NonNull T text) {
+        runOnUiThread(() -> {
+            dismissSnackbar();
+            snackbar = Utils.showLongSnackbar(this, text);
+        });
+    }
+
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 
     @Override

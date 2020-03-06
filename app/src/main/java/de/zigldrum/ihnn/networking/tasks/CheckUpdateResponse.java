@@ -55,7 +55,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         if (cpr == null) {
             Log.w(LOG_TAG, "Got null as message! Not correct!");
-            caller.showLongToast(info.UPDATE_ERROR);
+            caller.showLongSnackbar(info.UPDATE_ERROR);
             caller.updatesFinished(false);
             return;
         }
@@ -65,7 +65,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         List<ContentPack> remotePacks = cpr.getMsg();
         if (remotePacks == null) {
             Log.w(LOG_TAG, "Got null as message! Not correct!");
-            caller.showLongToast(info.UPDATE_ERROR);
+            caller.showLongSnackbar(info.UPDATE_ERROR);
             caller.updatesFinished(false);
             return;
         }
@@ -99,7 +99,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         if (remotePacks.size() == 0) {
             Log.i(LOG_TAG, "Update finished. No new packs found!");
             caller.setMainProgressVisible(false);
-            caller.showLongToast(info.UP_TO_DATE);
+            caller.showLongSnackbar(info.UP_TO_DATE);
             caller.updatesFinished(true);
             return;
         }
@@ -152,11 +152,11 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         if (state.saveState()) {
             caller.setMainProgressProgress(false, 100);
             Log.i(LOG_TAG, "Saved AppState after Updates!");
-            caller.showLongToast(info.UPDATE_SUCCESS);
+            caller.showLongSnackbar(info.UPDATE_SUCCESS);
             caller.updatesFinished(true);
         } else {
             Log.w(LOG_TAG, "Could not save AppState!");
-            caller.showLongToast(info.UPDATE_ERROR);
+            caller.showLongSnackbar(info.UPDATE_ERROR);
             caller.updatesFinished(false);
         }
     }
@@ -167,7 +167,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         if (t instanceof IOException) {
             Log.w(LOG_TAG, "Network failure!");
-            caller.showLongToast(info.SERVER_DOWN);
+            caller.showLongSnackbar(info.SERVER_DOWN);
         } else {
             Log.w(LOG_TAG, "Exception occurred while fetching server-data!", t);
         }
@@ -179,7 +179,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
     public interface UpdateMethods {
         void setInfoText(String txt);
 
-        void showLongToast(String text);
+        <T> void showLongSnackbar(@NonNull T text);
 
         void updatesFinished(boolean result);
 

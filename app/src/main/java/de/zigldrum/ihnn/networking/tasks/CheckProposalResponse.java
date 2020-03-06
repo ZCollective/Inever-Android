@@ -70,7 +70,7 @@ public class CheckProposalResponse implements Callback<ProposalResponse> {
     public interface ProposalResponseMethods {
         void proposalSent(boolean success);
 
-        void notifyUser(String message);
+        <T> void notifyUser(@NonNull T strId);
 
         void hideProgressBar();
     }
