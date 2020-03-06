@@ -122,7 +122,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     private void checkForUpdates() {
         ContentService backendConn = RequesterService.getInstance();
         Call<ContentPackResponse> request = backendConn.getPacks();
-        CheckUpdateResponse responseChecker = new CheckUpdateResponse(this, this);
+        CheckUpdateResponse responseChecker = new CheckUpdateResponse(this);
         request.enqueue(responseChecker);
     }
 
@@ -147,8 +147,14 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     }
 
     @Override
-    public void setInfoText(String message) {
-        runOnUiThread(() -> info.setText(message));
+    public <T> void setNetworkingInfoText(@NonNull T text) {
+        runOnUiThread(() -> {
+            if (text instanceof CharSequence) {
+                info.setText((CharSequence) text);
+            } else if (text instanceof Integer) {
+                info.setText((Integer) text);
+            }
+        });
     }
 
     @Override

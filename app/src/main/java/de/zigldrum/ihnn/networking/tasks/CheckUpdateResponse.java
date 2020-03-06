@@ -1,6 +1,5 @@
 package de.zigldrum.ihnn.networking.tasks;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,11 +27,9 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
     private static final String LOG_TAG = "CheckUpdateResponse";
 
     private final UpdateMethods caller;
-    private final ResponseProgressStrings info;
 
-    public CheckUpdateResponse(@NonNull UpdateMethods caller, @NonNull Context ctx) {
+    public CheckUpdateResponse(@NonNull UpdateMethods caller) {
         this.caller = caller;
-        this.info = new ResponseProgressStrings(ctx);
     }
 
     @Override
@@ -107,7 +104,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         Log.i(LOG_TAG, "Found " + remotePacks.size() + " new Pack(s). Getting Questions now.");
 
         caller.setMainProgressProgress(false, 5);
-        caller.setInfoText(info.DOWNLOADING_UPDATES);
+        caller.setNetworkingInfoText(R.string.info_downloading_updates);
 
         Set<Question> questionsToSet = state.getQuestions()
                 .stream()
@@ -145,7 +142,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
             }
         }
         packsToSet.addAll(remotePacks);
-        caller.setInfoText(info.STORING_UPDATES_TO_PHONE);
+        caller.setNetworkingInfoText(R.string.info_storing_updates_to_phone);
         state.setPacks(packsToSet);
         state.setQuestions(questionsToSet);
 
@@ -177,7 +174,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
     }
 
     public interface UpdateMethods {
-        void setInfoText(String txt);
+        <T> void setNetworkingInfoText(@NonNull T text);
 
         <T> void showLongSnackbar(@NonNull T text);
 
@@ -186,16 +183,5 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         void setMainProgressVisible(boolean isVisible);
 
         void setMainProgressProgress(boolean indeterminate, int progress);
-    }
-
-    private static class ResponseProgressStrings {
-
-        final String DOWNLOADING_UPDATES;
-        final String STORING_UPDATES_TO_PHONE;
-
-        ResponseProgressStrings(@NonNull Context ctx) {
-            DOWNLOADING_UPDATES = ctx.getString(R.string.info_downloading_updates);
-            STORING_UPDATES_TO_PHONE = ctx.getString(R.string.info_storing_updates_to_phone);
-        }
     }
 }
