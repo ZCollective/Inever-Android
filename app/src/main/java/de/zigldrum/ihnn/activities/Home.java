@@ -111,7 +111,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
                 break;
             case GameResults.GAME_QUESTIONS_EMPTY:
                 Log.d(LOG_TAG, "Got 1 from Game -> Displaying Error-Toast!");
-                showLongSnackbar(getString(R.string.info_no_questions_available));
+                showLongSnackbar(R.string.info_no_questions_available);
                 break;
             default:
                 Log.w(LOG_TAG, "Got undefined result-code from Game!");

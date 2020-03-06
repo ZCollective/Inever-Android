@@ -1,6 +1,5 @@
 package de.zigldrum.ihnn.networking.tasks;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -18,11 +17,9 @@ public class CheckProposalResponse implements Callback<ProposalResponse> {
     private static final String LOG_TAG = "CheckProposalResponse";
 
     private final ProposalResponseMethods caller;
-    private final String infoServerDown;
 
-    public CheckProposalResponse(@NonNull ProposalResponseMethods caller, @NonNull Context ctx) {
+    public CheckProposalResponse(@NonNull ProposalResponseMethods caller) {
         this.caller = caller;
-        this.infoServerDown = ctx.getResources().getString(R.string.info_server_down);
     }
 
     @Override
@@ -58,7 +55,7 @@ public class CheckProposalResponse implements Callback<ProposalResponse> {
 
         if (t instanceof IOException) {
             Log.w(LOG_TAG, "Network failure!");
-            caller.notifyUser(infoServerDown);
+            caller.notifyUser(R.string.info_server_down);
             caller.hideProgressBar();
         } else {
             Log.d(LOG_TAG, "Exception occurred while sending proposal!", t);

@@ -73,7 +73,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
 
         if (TextUtils.isEmpty(questionString)) {
             string.setError(errorEmptyProposal);
-            notifyUser(getString(R.string.proposal_string_empty));
+            notifyUser(errorEmptyProposal);
         } else {
             string.setError(null);
 
@@ -83,7 +83,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
                 ContentService backendConn = RequesterService.getInstance();
                 ProposalRequestBody requestBody = new ProposalRequestBody(questionString, senderName);
                 Call<ProposalResponse> request = backendConn.proposeQuestion(requestBody);
-                CheckProposalResponse responseChecker = new CheckProposalResponse(this, this);
+                CheckProposalResponse responseChecker = new CheckProposalResponse(this);
                 request.enqueue(responseChecker);
             });
         }
@@ -97,7 +97,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
         string.getEditText().getText().clear();
         sender.getEditText().getText().clear();
 
-        if (success) notifyUser(getString(R.string.info_proposal_sent_success));
+        if (success) notifyUser(R.string.info_proposal_sent_success);
     }
 
     @Override
