@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
 
     // CSV-Parsing
-    implementation 'com.opencsv:opencsv:5.0'
+    implementation 'com.opencsv:opencsv:5.1'
 
     // NoSQL-DB
     implementation 'io.paperdb:paperdb:2.6'
