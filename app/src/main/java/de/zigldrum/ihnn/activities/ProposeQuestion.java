@@ -6,9 +6,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
@@ -28,6 +30,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
 
     private TextInputLayout string;
     private TextInputLayout sender;
+    private Snackbar snackbar;
     private String errorEmptyProposal;
 
     @Override
@@ -70,7 +73,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
 
         if (TextUtils.isEmpty(questionString)) {
             string.setError(errorEmptyProposal);
-            notifyUser(getString(R.string.proposal_string_empty));
+            notifyUser(errorEmptyProposal);
         } else {
             string.setError(null);
 
@@ -80,7 +83,7 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
                 ContentService backendConn = RequesterService.getInstance();
                 ProposalRequestBody requestBody = new ProposalRequestBody(questionString, senderName);
                 Call<ProposalResponse> request = backendConn.proposeQuestion(requestBody);
-                CheckProposalResponse responseChecker = new CheckProposalResponse(this, this);
+                CheckProposalResponse responseChecker = new CheckProposalResponse(this);
                 request.enqueue(responseChecker);
             });
         }
@@ -94,12 +97,22 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
         string.getEditText().getText().clear();
         sender.getEditText().getText().clear();
 
-        if (success) notifyUser(getString(R.string.info_proposal_sent_success));
+        if (success) notifyUser(R.string.info_proposal_sent_success);
     }
 
     @Override
-    public void notifyUser(String message) {
-        Utils.showLongToast(getApplicationContext(), message);
+    public <T> void notifyUser(@NonNull T text) {
+        runOnUiThread(() -> {
+            dismissSnackbar();
+            snackbar = Utils.showLongSnackbar(this, text);
+        });
+    }
+
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 
     @Override

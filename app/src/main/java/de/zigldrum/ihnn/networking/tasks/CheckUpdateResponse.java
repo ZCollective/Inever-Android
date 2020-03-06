@@ -1,6 +1,5 @@
 package de.zigldrum.ihnn.networking.tasks;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,11 +27,9 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
     private static final String LOG_TAG = "CheckUpdateResponse";
 
     private final UpdateMethods caller;
-    private final ResponseProgressStrings info;
 
-    public CheckUpdateResponse(@NonNull UpdateMethods caller, @NonNull Context ctx) {
+    public CheckUpdateResponse(@NonNull UpdateMethods caller) {
         this.caller = caller;
-        this.info = new ResponseProgressStrings(ctx);
     }
 
     @Override
@@ -55,7 +52,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         if (cpr == null) {
             Log.w(LOG_TAG, "Got null as message! Not correct!");
-            caller.showLongToast(info.UPDATE_ERROR);
+            caller.showLongSnackbar(R.string.info_update_error);
             caller.updatesFinished(false);
             return;
         }
@@ -65,7 +62,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         List<ContentPack> remotePacks = cpr.getMsg();
         if (remotePacks == null) {
             Log.w(LOG_TAG, "Got null as message! Not correct!");
-            caller.showLongToast(info.UPDATE_ERROR);
+            caller.showLongSnackbar(R.string.info_update_error);
             caller.updatesFinished(false);
             return;
         }
@@ -99,7 +96,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         if (remotePacks.size() == 0) {
             Log.i(LOG_TAG, "Update finished. No new packs found!");
             caller.setMainProgressVisible(false);
-            caller.showLongToast(info.UP_TO_DATE);
+            caller.showLongSnackbar(R.string.info_up_to_date);
             caller.updatesFinished(true);
             return;
         }
@@ -107,7 +104,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         Log.i(LOG_TAG, "Found " + remotePacks.size() + " new Pack(s). Getting Questions now.");
 
         caller.setMainProgressProgress(false, 5);
-        caller.setInfoText(info.DOWNLOADING_UPDATES);
+        caller.setNetworkingInfoText(R.string.info_downloading_updates);
 
         Set<Question> questionsToSet = state.getQuestions()
                 .stream()
@@ -145,18 +142,18 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
             }
         }
         packsToSet.addAll(remotePacks);
-        caller.setInfoText(info.STORING_UPDATES_TO_PHONE);
+        caller.setNetworkingInfoText(R.string.info_storing_updates_to_phone);
         state.setPacks(packsToSet);
         state.setQuestions(questionsToSet);
 
         if (state.saveState()) {
             caller.setMainProgressProgress(false, 100);
             Log.i(LOG_TAG, "Saved AppState after Updates!");
-            caller.showLongToast(info.UPDATE_SUCCESS);
+            caller.showLongSnackbar(R.string.info_update_success);
             caller.updatesFinished(true);
         } else {
             Log.w(LOG_TAG, "Could not save AppState!");
-            caller.showLongToast(info.UPDATE_ERROR);
+            caller.showLongSnackbar(R.string.info_update_error);
             caller.updatesFinished(false);
         }
     }
@@ -167,7 +164,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         if (t instanceof IOException) {
             Log.w(LOG_TAG, "Network failure!");
-            caller.showLongToast(info.SERVER_DOWN);
+            caller.showLongSnackbar(R.string.info_server_down);
         } else {
             Log.w(LOG_TAG, "Exception occurred while fetching server-data!", t);
         }
@@ -177,35 +174,14 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
     }
 
     public interface UpdateMethods {
-        void setInfoText(String txt);
+        <T> void setNetworkingInfoText(@NonNull T text);
 
-        void showLongToast(String text);
+        <T> void showLongSnackbar(@NonNull T text);
 
         void updatesFinished(boolean result);
 
         void setMainProgressVisible(boolean isVisible);
 
         void setMainProgressProgress(boolean indeterminate, int progress);
-    }
-
-    private static class ResponseProgressStrings {
-
-        final String UP_TO_DATE;
-        final String SERVER_DOWN;
-        final String UPDATE_ERROR;
-        final String UPDATE_SUCCESS;
-        final String CHECKING_UPDATES;
-        final String DOWNLOADING_UPDATES;
-        final String STORING_UPDATES_TO_PHONE;
-
-        ResponseProgressStrings(@NonNull Context ctx) {
-            UP_TO_DATE = ctx.getString(R.string.info_up_to_date);
-            SERVER_DOWN = ctx.getString(R.string.info_server_down);
-            UPDATE_ERROR = ctx.getString(R.string.info_update_error);
-            UPDATE_SUCCESS = ctx.getString(R.string.info_update_success);
-            CHECKING_UPDATES = ctx.getString(R.string.info_checking_updates);
-            DOWNLOADING_UPDATES = ctx.getString(R.string.info_downloading_updates);
-            STORING_UPDATES_TO_PHONE = ctx.getString(R.string.info_storing_updates_to_phone);
-        }
     }
 }
