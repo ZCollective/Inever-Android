@@ -43,7 +43,6 @@ public class Game extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         Log.i(LOG_TAG, "Running Game::onCreate()");
-        Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
 
         questionDisplay = findViewById(R.id.question_text);
         nextButton = findViewById(R.id.btn_game_next);
