@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -13,6 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.zigldrum.ihnn.networking.objects.ContentPackResponse;
 import de.zigldrum.ihnn.networking.services.ContentService;
@@ -32,6 +36,8 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     private static final String LOG_TAG = "Home";
 
+    private final List<Button> uiButtons = new ArrayList<>(4);
+
     private ProgressBar progressBar;
     private Snackbar snackbar;
     private TextView info;
@@ -46,8 +52,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         info = findViewById(R.id.progress_info);
         progressBar = findViewById(R.id.main_progress);
 
-        setNetworkingProgressVisibility(true);
-        setNetworkingProgress(true, 0);
+        uiButtons.add(findViewById(R.id.btn_play));
+        uiButtons.add(findViewById(R.id.btn_packs));
+        uiButtons.add(findViewById(R.id.btn_suggest));
+        uiButtons.add(findViewById(R.id.btn_settings));
     }
 
     @Override
@@ -66,7 +74,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     @Override
     protected void onResume() {
         super.onResume();
+
         Log.i(LOG_TAG, "Running Home::onResume()");
+
+        uiButtons.forEach(btn -> btn.setEnabled(true));
     }
 
     @Override
@@ -164,11 +175,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     @Override
     public void setNetworkingProgressVisibility(boolean isVisible) {
-        if (progressBar == null) {
-            Log.w(LOG_TAG, "Cannot get Progressbar!");
-        } else {
-            progressBar.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-        }
+        runOnUiThread(() -> progressGroup.setVisibility(isVisible ? View.VISIBLE : View.GONE));
     }
 
     @Override
@@ -191,6 +198,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     public void startGame(View v) {
         dismissSnackbar();
+        uiButtons.forEach(btn -> btn.setEnabled(false));
 
         Intent startGame = new Intent(this, Game.class);
         startActivityForResult(startGame, RequestCodes.RC_GAME);
@@ -198,6 +206,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     public void openSettings(View v) {
         dismissSnackbar();
+        uiButtons.forEach(btn -> btn.setEnabled(false));
 
         Intent openSettings = new Intent(this, Settings.class);
         startActivityForResult(openSettings, RequestCodes.RC_SETTINGS);
@@ -205,6 +214,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     public void openProposals(View v) {
         dismissSnackbar();
+        uiButtons.forEach(btn -> btn.setEnabled(false));
 
         Intent openProposals = new Intent(this, ProposeQuestion.class);
         startActivity(openProposals);
@@ -212,6 +222,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     public void openContentManagement(View v) {
         dismissSnackbar();
+        uiButtons.forEach(btn -> btn.setEnabled(false));
 
         Intent openContentManagement = new Intent(this, ContentPacks.class);
         startActivity(openContentManagement);
