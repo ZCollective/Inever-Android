@@ -23,15 +23,18 @@ public class CheckProposalResponse implements Callback<ProposalResponse> {
     }
 
     @Override
-    public void onResponse(@NonNull Call<ProposalResponse> call, @NonNull Response<ProposalResponse> response) {
+    public void onResponse(@NonNull Call<ProposalResponse> call,
+                           @NonNull Response<ProposalResponse> response) {
+        Log.i(LOG_TAG, "Running CheckProposalResponse::onResponse()");
+
         if (!response.isSuccessful()) {
             call.cancel();
             Log.w(LOG_TAG, "Network-call not successful. Status-Code: " + response.code());
 
             try {
                 Log.w(LOG_TAG, "Additional error-info: " + response.errorBody().string());
-            } catch (IOException ioe) {
-                Log.w(LOG_TAG, "Can't convert error-body to string", ioe);
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "Can't convert error-body to string", e);
             }
 
             caller.proposalSent(false);
@@ -50,15 +53,16 @@ public class CheckProposalResponse implements Callback<ProposalResponse> {
     }
 
     @Override
-    public void onFailure(Call<ProposalResponse> call, Throwable t) {
+    public void onFailure(@NonNull Call<ProposalResponse> call, @NonNull Throwable t) {
+        Log.i(LOG_TAG, "Running CheckProposalResponse::onFailure()");
+
         call.cancel();
 
         if (t instanceof IOException) {
             Log.w(LOG_TAG, "Network failure!");
             caller.notifyUser(R.string.info_server_down);
-            caller.hideProgressBar();
         } else {
-            Log.d(LOG_TAG, "Exception occurred while sending proposal!", t);
+            Log.w(LOG_TAG, "Exception occurred while sending proposal!", t);
         }
 
         caller.proposalSent(false);
@@ -68,7 +72,5 @@ public class CheckProposalResponse implements Callback<ProposalResponse> {
         void proposalSent(boolean success);
 
         <T> void notifyUser(@NonNull T strId);
-
-        void hideProgressBar();
     }
 }

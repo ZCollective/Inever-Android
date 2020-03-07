@@ -114,9 +114,4 @@ public class ProposeQuestion extends AppCompatActivity implements CheckProposalR
             snackbar = null;
         }
     }
-
-    @Override
-    public void hideProgressBar() {
-        Utils.setMainProgressVisible(this, false);
-    }
 }
