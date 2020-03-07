@@ -82,9 +82,9 @@ public class AppState {
             Map<String, String> packMap;
 
             while ((packMap = packIn.readMap()) != null) {
-                String packVersion = packMap.get(ContentPackKeys.VERSION);
-                String packMinAge = packMap.get(ContentPackKeys.MIN_AGE);
-                String packId = packMap.get(ContentPackKeys.ID);
+                String packVersion = packMap.get(ContentPackKeys.CP_VERSION);
+                String packMinAge = packMap.get(ContentPackKeys.CP_MIN_AGE);
+                String packId = packMap.get(ContentPackKeys.CP_ID);
 
                 if (packId == null || packVersion == null || packMinAge == null) {
                     Log.w(LOG_TAG, "Malformed pack, skipping this one!");
@@ -95,9 +95,9 @@ public class AppState {
                 int minAge = Integer.parseInt(packMinAge);
                 int id = Integer.parseInt(packId);
 
-                String name = packMap.get(ContentPackKeys.NAME);
-                String keywords = packMap.get(ContentPackKeys.KEY_WORDS);
-                String description = packMap.get(ContentPackKeys.DESCRIPTION);
+                String name = packMap.get(ContentPackKeys.CP_NAME);
+                String keywords = packMap.get(ContentPackKeys.CP_KEY_WORDS);
+                String description = packMap.get(ContentPackKeys.CP_DESCRIPTION);
 
                 ContentPack pack = new ContentPack(id, name, description, keywords, minAge, version);
                 packs.add(pack);
@@ -113,7 +113,7 @@ public class AppState {
             Map<String, String> questionMap;
 
             while ((questionMap = questionIn.readMap()) != null) {
-                String qId = questionMap.get(QuestionKeys.ID);
+                String qId = questionMap.get(QuestionKeys.QUESTION_ID);
                 String packIdFk = questionMap.get(QuestionKeys.PACK_ID_FK);
 
                 if (qId == null | packIdFk == null) {

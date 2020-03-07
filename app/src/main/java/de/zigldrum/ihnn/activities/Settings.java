@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.zigldrum.ihnn.activities.content.SettingsAdapter;
 import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.R;
-import de.zigldrum.ihnn.utils.Constants.SettingsResults;
+
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.SETTINGS_DEFAULT;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.SETTINGS_UPDATE_NOW;
 
 public class Settings extends AppCompatActivity implements SettingsAdapter.SettingsSwitchCallback {
 
@@ -66,7 +68,7 @@ public class Settings extends AppCompatActivity implements SettingsAdapter.Setti
             }
         }
 
-        setResult(updateTriggered ? SettingsResults.UPDATE_NOW : SettingsResults.DEFAULT);
+        setResult(updateTriggered ? SETTINGS_UPDATE_NOW : SETTINGS_DEFAULT);
         super.finish();
     }
 

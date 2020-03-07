@@ -25,8 +25,8 @@ import de.zigldrum.ihnn.utils.Utils;
 import retrofit2.Call;
 
 import static de.zigldrum.ihnn.utils.Constants.*;
-import static de.zigldrum.ihnn.utils.Constants.RequestCodes.GAME_REQUEST_CODE;
-import static de.zigldrum.ihnn.utils.Constants.RequestCodes.SETTINGS_REQUEST_CODE;
+import static de.zigldrum.ihnn.utils.Constants.RequestCodes.RC_GAME;
+import static de.zigldrum.ihnn.utils.Constants.RequestCodes.RC_SETTINGS;
 
 public class Home extends AppCompatActivity implements CheckUpdateResponse.UpdateMethods {
 
@@ -74,10 +74,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case SETTINGS_REQUEST_CODE:
+            case RC_SETTINGS:
                 evalSettingsResponse(resultCode);
                 break;
-            case GAME_REQUEST_CODE:
+            case RC_GAME:
                 evalGameResponse(resultCode);
                 break;
             default:
@@ -88,10 +88,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     private void evalSettingsResponse(int resultCode) {
         switch (resultCode) {
-            case SettingsResults.DEFAULT:
+            case SettingsResults.SETTINGS_DEFAULT:
                 Log.d(LOG_TAG, "Got 0 from Settings -> Doing nothing.");
                 break;
-            case SettingsResults.UPDATE_NOW:
+            case SettingsResults.SETTINGS_UPDATE_NOW:
                 Log.d(LOG_TAG, "Got 1 from Settings -> Triggering Content Update!");
                 checkForUpdates();
                 break;
@@ -193,14 +193,14 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         dismissSnackbar();
 
         Intent startGame = new Intent(this, Game.class);
-        startActivityForResult(startGame, RequestCodes.GAME_REQUEST_CODE);
+        startActivityForResult(startGame, RequestCodes.RC_GAME);
     }
 
     public void openSettings(View v) {
         dismissSnackbar();
 
         Intent openSettings = new Intent(this, Settings.class);
-        startActivityForResult(openSettings, RequestCodes.SETTINGS_REQUEST_CODE);
+        startActivityForResult(openSettings, RequestCodes.RC_SETTINGS);
     }
 
     public void openProposals(View v) {

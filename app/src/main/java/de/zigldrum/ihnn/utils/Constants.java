@@ -9,33 +9,33 @@ import java.lang.annotation.RetentionPolicy;
 public class Constants {
 
     @StringDef({
-            ContentPackKeys.DESCRIPTION,
-            ContentPackKeys.KEY_WORDS,
-            ContentPackKeys.VERSION,
-            ContentPackKeys.MIN_AGE,
-            ContentPackKeys.NAME,
-            ContentPackKeys.ID
+            ContentPackKeys.CP_DESCRIPTION,
+            ContentPackKeys.CP_KEY_WORDS,
+            ContentPackKeys.CP_VERSION,
+            ContentPackKeys.CP_MIN_AGE,
+            ContentPackKeys.CP_NAME,
+            ContentPackKeys.CP_ID
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ContentPackKeys {
-        String DESCRIPTION = "content_pack_description";
-        String KEY_WORDS = "content_pack_keywords";
-        String VERSION = "content_pack_version";
-        String MIN_AGE = "content_pack_min_age";
-        String NAME = "content_pack_name";
-        String ID = "content_pack_id";
+        String CP_DESCRIPTION = "content_pack_description";
+        String CP_KEY_WORDS = "content_pack_keywords";
+        String CP_VERSION = "content_pack_version";
+        String CP_MIN_AGE = "content_pack_min_age";
+        String CP_NAME = "content_pack_name";
+        String CP_ID = "content_pack_id";
     }
 
     @StringDef({
             QuestionKeys.QUESTION_STRING,
-            QuestionKeys.PACK_ID_FK,
-            QuestionKeys.ID
+            QuestionKeys.QUESTION_ID,
+            QuestionKeys.PACK_ID_FK
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface QuestionKeys {
         String QUESTION_STRING = "question_string";
+        String QUESTION_ID = "question_id";
         String PACK_ID_FK = "content_pack_id_fk";
-        String ID = "question_id";
     }
 
     @IntDef({AgeRestrictions.NSFW_BORDER})
@@ -44,21 +44,30 @@ public class Constants {
         int NSFW_BORDER = 18;
     }
 
-    @IntDef({RequestCodes.SETTINGS_REQUEST_CODE})
+    @IntDef({
+            RequestCodes.RC_SETTINGS,
+            RequestCodes.RC_GAME
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface RequestCodes {
-        int SETTINGS_REQUEST_CODE = 0;
-        int GAME_REQUEST_CODE = 1;
+        int RC_SETTINGS = 0;
+        int RC_GAME = 1;
     }
 
-    @IntDef({SettingsResults.DEFAULT, SettingsResults.UPDATE_NOW})
+    @IntDef({
+            SettingsResults.SETTINGS_DEFAULT,
+            SettingsResults.SETTINGS_UPDATE_NOW
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SettingsResults {
-        int DEFAULT = 0;
-        int UPDATE_NOW = 1;
+        int SETTINGS_DEFAULT = 0;
+        int SETTINGS_UPDATE_NOW = 1;
     }
 
-    @IntDef({GameResults.GAME_DEFAULT, GameResults.GAME_QUESTIONS_EMPTY})
+    @IntDef({
+            GameResults.GAME_DEFAULT,
+            GameResults.GAME_QUESTIONS_EMPTY
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface GameResults {
         int GAME_DEFAULT = 0;
