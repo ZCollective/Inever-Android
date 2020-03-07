@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,16 +30,11 @@ public class ContentPacks extends AppCompatActivity implements ContentPacksAdapt
     private boolean updated = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_packs);
-    }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        Log.d(LOG_TAG, "Message: " + getIntent().getStringExtra("msg"));
+        Log.i(LOG_TAG, "Running ContentPacks::onCreate()");
 
         RecyclerView rView = findViewById(R.id.packs_list_view);
 
@@ -70,6 +66,8 @@ public class ContentPacks extends AppCompatActivity implements ContentPacksAdapt
 
     @Override
     public void finish() {
+        Log.i(LOG_TAG, "Running ContentPacks::finish()");
+
         if (updated) {
             if (state.saveState()) {
                 Log.i(LOG_TAG, "Saving AppState after Updates!");
