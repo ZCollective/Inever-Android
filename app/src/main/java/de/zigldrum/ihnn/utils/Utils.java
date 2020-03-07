@@ -47,28 +47,4 @@ public class Utils {
             progressBar.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
         }
     }
-
-    public static Intent startGame(@NonNull Context ctx) {
-        Intent intent = new Intent(ctx, Game.class);
-        intent.putExtra("msg", "Have fun!");
-        return intent;
-    }
-
-    public static Intent openSettings(@NonNull Context ctx) {
-        Intent intent = new Intent(ctx, Settings.class);
-        intent.putExtra("msg", "Go set some things!");
-        return intent;
-    }
-
-    public static Intent openProposals(@NonNull Context ctx) {
-        Intent intent = new Intent(ctx, ProposeQuestion.class);
-        intent.putExtra("msg", "Go propose!");
-        return intent;
-    }
-
-    public static Intent openContentManagement(@NonNull Context ctx) {
-        Intent intent = new Intent(ctx, ContentPacks.class);
-        intent.putExtra("msg", "Go manage!");
-        return intent;
-    }
 }

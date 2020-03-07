@@ -189,18 +189,30 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
      */
 
     public void startGame(View v) {
-        startActivityForResult(Utils.startGame(this), GAME_REQUEST_CODE);
+        dismissSnackbar();
+
+        Intent startGame = new Intent(this, Game.class);
+        startActivityForResult(startGame, RequestCodes.GAME_REQUEST_CODE);
     }
 
     public void openSettings(View v) {
-        startActivityForResult(Utils.openSettings(this), SETTINGS_REQUEST_CODE);
+        dismissSnackbar();
+
+        Intent openSettings = new Intent(this, Settings.class);
+        startActivityForResult(openSettings, RequestCodes.SETTINGS_REQUEST_CODE);
     }
 
     public void openProposals(View v) {
-        startActivity(Utils.openProposals(this));
+        dismissSnackbar();
+
+        Intent openProposals = new Intent(this, ProposeQuestion.class);
+        startActivity(openProposals);
     }
 
     public void openContentManagement(View v) {
-        startActivity(Utils.openContentManagement(this));
+        dismissSnackbar();
+
+        Intent openContentManagement = new Intent(this, ContentPacks.class);
+        startActivity(openContentManagement);
     }
 }
