@@ -12,6 +12,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Group;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,13 +25,12 @@ import de.zigldrum.ihnn.networking.services.RequesterService;
 import de.zigldrum.ihnn.networking.tasks.CheckUpdateResponse;
 import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.utils.AppState;
-import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;
 import retrofit2.Call;
 
 import static de.zigldrum.ihnn.utils.Constants.*;
-import static de.zigldrum.ihnn.utils.Constants.RequestCodes.RC_GAME;
-import static de.zigldrum.ihnn.utils.Constants.RequestCodes.RC_SETTINGS;
+import static de.zigldrum.ihnn.utils.Constants.GameResults.*;
+import static de.zigldrum.ihnn.utils.Constants.SettingsResults.*;
 
 public class Home extends AppCompatActivity implements CheckUpdateResponse.UpdateMethods {
 
@@ -41,6 +41,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     private ProgressBar progressBar;
     private Snackbar snackbar;
     private TextView info;
+    private Group progressGroup;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
         info = findViewById(R.id.progress_info);
         progressBar = findViewById(R.id.main_progress);
+        progressGroup = findViewById(R.id.progressGroup);
 
         uiButtons.add(findViewById(R.id.btn_play));
         uiButtons.add(findViewById(R.id.btn_packs));
@@ -65,6 +67,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         Log.i(LOG_TAG, "Running Home::onPostCreate()");
 
         if (AppState.getInstance().autoUpdatesEnabled()) {
+            setNetworkingProgressVisibility(true);
             checkForUpdates();
         } else {
             setNetworkingProgressVisibility(false);
@@ -85,10 +88,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case RC_SETTINGS:
+            case RequestCodes.RC_SETTINGS:
                 evalSettingsResponse(resultCode);
                 break;
-            case RC_GAME:
+            case RequestCodes.RC_GAME:
                 evalGameResponse(resultCode);
                 break;
             default:
@@ -99,10 +102,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     private void evalSettingsResponse(int resultCode) {
         switch (resultCode) {
-            case SettingsResults.SETTINGS_DEFAULT:
+            case SETTINGS_DEFAULT:
                 Log.d(LOG_TAG, "Got 0 from Settings -> Doing nothing.");
                 break;
-            case SettingsResults.SETTINGS_UPDATE_NOW:
+            case SETTINGS_UPDATE_NOW:
                 Log.d(LOG_TAG, "Got 1 from Settings -> Triggering Content Update!");
                 checkForUpdates();
                 break;
@@ -114,10 +117,10 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
     private void evalGameResponse(int resultCode) {
         switch (resultCode) {
-            case GameResults.GAME_DEFAULT:
+            case GAME_DEFAULT:
                 Log.d(LOG_TAG, "Got 0 from Game -> Doing nothing.");
                 break;
-            case GameResults.GAME_QUESTIONS_EMPTY:
+            case GAME_QUESTIONS_EMPTY:
                 Log.d(LOG_TAG, "Got 1 from Game -> Displaying Error-Snackbar!");
                 showLongSnackbar(R.string.info_no_questions_available);
                 break;
@@ -128,6 +131,13 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     }
 
     private void checkForUpdates() {
+        runOnUiThread(() -> {
+            // Show progressbar and -text to the user
+            setNetworkingProgressVisibility(true);
+            setNetworkingProgress(false, 5);
+        });
+
+        // Make async REST-Call to backend
         ContentService backendConn = RequesterService.getInstance();
         Call<ContentPackResponse> request = backendConn.getPacks();
         CheckUpdateResponse responseChecker = new CheckUpdateResponse(this);
