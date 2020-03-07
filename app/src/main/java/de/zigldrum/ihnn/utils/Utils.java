@@ -38,13 +38,4 @@ public class Utils {
 
         return result;
     }
-
-    public static void setMainProgressVisible(@NonNull Activity activity, boolean isVisible) {
-        ProgressBar progressBar = activity.findViewById(R.id.main_progress);
-        if (progressBar == null) {
-            Log.w(LOG_TAG, "Cannot get Progressbar!");
-        } else {
-            progressBar.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-        }
-    }
 }

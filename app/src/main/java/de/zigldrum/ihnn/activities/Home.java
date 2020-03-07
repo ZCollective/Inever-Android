@@ -49,8 +49,8 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
         Paper.init(this);
 
-        Utils.setMainProgressVisible(this, true);
-        setMainProgressProgress(true, 0);
+        setNetworkingProgressVisibility(true);
+        setNetworkingProgress(true, 0);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
         if (AppState.getInstance().getEnableAutoUpdates()) {
             checkForUpdates();
         } else {
-            Utils.setMainProgressVisible(this, false);
+            setNetworkingProgressVisibility(false);
         }
     }
 
@@ -166,12 +166,16 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     }
 
     @Override
-    public void setMainProgressVisible(boolean isVisible) {
-        Utils.setMainProgressVisible(this, isVisible);
+    public void setNetworkingProgressVisibility(boolean isVisible) {
+        if (progressBar == null) {
+            Log.w(LOG_TAG, "Cannot get Progressbar!");
+        } else {
+            progressBar.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
     @Override
-    public void setMainProgressProgress(boolean indeterminate, @IntRange(from = 0, to = 100) int progress) {
+    public void setNetworkingProgress(boolean indeterminate, @IntRange(from = 0, to = 100) int progress) {
         runOnUiThread(() -> {
             if (progressBar == null) {
                 Log.w(LOG_TAG, "Cannot get Progressbar!");

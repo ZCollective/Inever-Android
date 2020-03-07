@@ -2,6 +2,7 @@ package de.zigldrum.ihnn.networking.tasks;
 
 import android.util.Log;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         if (remotePacks.size() == 0) {
             Log.i(LOG_TAG, "Update finished. No new packs found!");
-            caller.setMainProgressVisible(false);
+            caller.setNetworkingProgressVisibility(false);
             caller.showLongSnackbar(R.string.info_up_to_date);
             caller.updatesFinished(true);
             return;
@@ -103,7 +104,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         Log.i(LOG_TAG, "Found " + remotePacks.size() + " new Pack(s). Getting Questions now.");
 
-        caller.setMainProgressProgress(false, 5);
+        caller.setNetworkingProgress(false, 5);
         caller.setNetworkingInfoText(R.string.info_downloading_updates);
 
         Set<Question> questionsToSet = state.getQuestions()
@@ -136,7 +137,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
                 if (questions != null) questionsToSet.addAll(questions);
 
                 totalProgress += progressInc;
-                caller.setMainProgressProgress(false, totalProgress);
+                caller.setNetworkingProgress(false, totalProgress);
             } catch (Exception e) {
                 Log.w(LOG_TAG, "Exception occurred while getting Updates!", e);
             }
@@ -147,7 +148,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         state.setQuestions(questionsToSet);
 
         if (state.saveState()) {
-            caller.setMainProgressProgress(false, 100);
+            caller.setNetworkingProgress(false, 100);
             Log.i(LOG_TAG, "Saved AppState after Updates!");
             caller.showLongSnackbar(R.string.info_update_success);
             caller.updatesFinished(true);
@@ -169,7 +170,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
             Log.w(LOG_TAG, "Exception occurred while fetching server-data!", t);
         }
 
-        caller.setMainProgressVisible(false);
+        caller.setNetworkingProgressVisibility(false);
         caller.updatesFinished(false);
     }
 
@@ -180,8 +181,9 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         void updatesFinished(boolean result);
 
-        void setMainProgressVisible(boolean isVisible);
+        void setNetworkingProgressVisibility(boolean isVisible);
 
-        void setMainProgressProgress(boolean indeterminate, int progress);
+        void setNetworkingProgress(boolean indeterminate,
+                                   @IntRange(from = 0, to = 100) int progress);
     }
 }
