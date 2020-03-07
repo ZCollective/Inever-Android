@@ -105,7 +105,7 @@ public class Game extends AppCompatActivity {
                                               .filter(p -> !state.getDisabledPacks().contains(p.getId()))
                                               .collect(Collectors.toList());
 
-        if (state.isOnlyNSFW()) {
+        if (state.isNSFWOnly()) {
             Log.d(LOG_TAG, "Ignoring other age settings. NSFWOnly mode overrides!");
             List<Integer> nsfwPackIDs = enabledPacks
                     .stream()
@@ -117,7 +117,7 @@ public class Game extends AppCompatActivity {
                  .stream()
                  .filter(q -> nsfwPackIDs.contains(q.getPackid()))
                  .forEach(questions::add);
-        } else if (state.getEnableNSFW()) {
+        } else if (state.getNSFWEnabled()) {
             Log.d(LOG_TAG, "NSFW Mode enabled.");
             List<Integer> enabledPackIDs = enabledPacks
                     .stream()

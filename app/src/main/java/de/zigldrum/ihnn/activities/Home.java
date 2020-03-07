@@ -56,7 +56,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
 
         Log.i(LOG_TAG, "Running Home::onPostCreate()");
 
-        if (AppState.getInstance().getEnableAutoUpdates()) {
+        if (AppState.getInstance().autoUpdatesEnabled()) {
             checkForUpdates();
         } else {
             setNetworkingProgressVisibility(false);

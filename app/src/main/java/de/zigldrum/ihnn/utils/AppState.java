@@ -138,27 +138,27 @@ public class AppState {
         return Optional.empty();
     }
 
-    public boolean getEnableNSFW() {
+    public boolean getNSFWEnabled() {
         return enableNSFW;
     }
 
-    public void setEnableNSFW(boolean enable) {
-        this.enableNSFW = enable;
+    public void setNSFWEnabled(boolean enabled) {
+        this.enableNSFW = enabled;
     }
 
-    public boolean getEnableAutoUpdates() {
+    public boolean autoUpdatesEnabled() {
         return enableAutoUpdates;
     }
 
-    public void setEnableAutoUpdates(boolean enable) {
-        this.enableAutoUpdates = enable;
+    public void setAutoUpdatesEnabled(boolean enabled) {
+        this.enableAutoUpdates = enabled;
     }
 
-    public boolean isOnlyNSFW() {
+    public boolean isNSFWOnly() {
         return onlyNSFW;
     }
 
-    public void setOnlyNSFW(boolean onlyNSFW) {
+    public void setNSFWOnly(boolean onlyNSFW) {
         this.onlyNSFW = onlyNSFW;
     }
 

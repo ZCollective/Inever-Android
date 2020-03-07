@@ -41,27 +41,27 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
             case 0:
                 // NSFW-Choice
                 viewHolder.text.setText(R.string.settings_enable_18_plus);
-                viewHolder.toggleSwitch.setChecked(state.getEnableNSFW());
+                viewHolder.toggleSwitch.setChecked(state.getNSFWEnabled());
                 viewHolder.toggleSwitch.setOnCheckedChangeListener((view, checked) -> {
-                    state.setEnableNSFW(checked);
+                    state.setNSFWEnabled(checked);
                     Log.i(LOG_TAG, "NSFW is " + (checked ? "enabled" : "disabled"));
                 });
                 break;
             case 1:
                 // Auto-Update-Choice
                 viewHolder.text.setText(R.string.settings_enable_content_update);
-                viewHolder.toggleSwitch.setChecked(state.getEnableAutoUpdates());
+                viewHolder.toggleSwitch.setChecked(state.autoUpdatesEnabled());
                 viewHolder.toggleSwitch.setOnCheckedChangeListener((view, checked) -> {
-                    state.setEnableAutoUpdates(checked);
+                    state.setAutoUpdatesEnabled(checked);
                     Log.i(LOG_TAG, "Auto Updates are " + (checked ? "enabled" : "disabled"));
                 });
                 break;
             case 2:
                 // NSFW-only-Choice
                 viewHolder.text.setText(R.string.settings_nsfw_only);
-                viewHolder.toggleSwitch.setChecked(state.isOnlyNSFW());
+                viewHolder.toggleSwitch.setChecked(state.isNSFWOnly());
                 viewHolder.toggleSwitch.setOnCheckedChangeListener((view, checked) -> {
-                    state.setOnlyNSFW(checked);
+                    state.setNSFWOnly(checked);
                     Log.i(LOG_TAG, "NSFW Only mode is " + (checked ? "enabled" : "disabled"));
                 });
                 break;
