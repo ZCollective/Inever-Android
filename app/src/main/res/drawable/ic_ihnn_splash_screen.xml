@@ -4,7 +4,7 @@
     android:opacity="translucent">
 
     <!--Static background-->
-    <item android:drawable="@color/background" />
+    <item android:drawable="@color/colorPrimaryLight" />
 
     <!--Static foreground-->
     <item
