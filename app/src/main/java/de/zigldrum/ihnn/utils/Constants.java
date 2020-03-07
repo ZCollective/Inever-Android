@@ -73,4 +73,20 @@ public class Constants {
         int GAME_DEFAULT = 0;
         int GAME_QUESTIONS_EMPTY = 1;
     }
+
+    @IntDef({
+            UpdateProgress.START,
+            UpdateProgress.GOT_VALID_RESPONSE,
+            UpdateProgress.EVALUATED_CONTENT_PACKS,
+            UpdateProgress.DOWNLOADED_NEW_CONTENT_PACKS,
+            UpdateProgress.DONE,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface UpdateProgress {
+        int START = 5;
+        int GOT_VALID_RESPONSE = 15;
+        int EVALUATED_CONTENT_PACKS = 40;
+        int DOWNLOADED_NEW_CONTENT_PACKS = 90;
+        int DONE = 100;
+    }
 }

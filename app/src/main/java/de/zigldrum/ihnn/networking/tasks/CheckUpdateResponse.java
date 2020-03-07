@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -23,18 +24,133 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static de.zigldrum.ihnn.utils.Constants.UpdateProgress.DOWNLOADED_NEW_CONTENT_PACKS;
+import static de.zigldrum.ihnn.utils.Constants.UpdateProgress.EVALUATED_CONTENT_PACKS;
+import static de.zigldrum.ihnn.utils.Constants.UpdateProgress.GOT_VALID_RESPONSE;
+import static de.zigldrum.ihnn.utils.Constants.UpdateProgress.START;
+
 public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
     private static final String LOG_TAG = "CheckUpdateResponse";
 
     private final UpdateMethods caller;
+    private final AppState state = AppState.getInstance();
 
     public CheckUpdateResponse(@NonNull UpdateMethods caller) {
         this.caller = caller;
     }
 
     @Override
-    public void onResponse(@NonNull Call<ContentPackResponse> call, @NonNull Response<ContentPackResponse> response) {
+    public void onResponse(@NonNull Call<ContentPackResponse> call,
+                           @NonNull Response<ContentPackResponse> response) {
+        Log.i(LOG_TAG, "Running CheckUpdateResponse::onResponse()");
+
+        try {
+            caller.setNetworkingProgress(false, START);
+
+            if (!isRequestSuccessful(call, response)) return;
+
+            ContentPackResponse cpr = response.body();
+            if (!validResponseBody(cpr)) return;
+
+            Log.i(LOG_TAG, "Received Response. Message: " + cpr.getStatus());
+
+            List<ContentPack> remotePacks = cpr.getMsg();
+            if (!validResponseAttribute(remotePacks)) return;
+
+            Log.d(LOG_TAG, remotePacks.toString());
+
+            Set<ContentPack> packsToSet = getPackDifferences(remotePacks);
+
+            if (!newPacksAvailable(remotePacks.size())) return;
+
+            Log.i(LOG_TAG, "Found new pack(s): amount=" + remotePacks.size() + ". Getting " +
+                           "Questions now.");
+
+            Set<Question> questionsToSet = downloadQuestions(remotePacks);
+            packsToSet.addAll(remotePacks);
+
+            saveChanges(packsToSet, questionsToSet);
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "Exception occurred processing update-response", e);
+        }
+    }
+
+    private Set<ContentPack> getPackDifferences(List<ContentPack> remotePacks) {
+        Set<ContentPack> packsToSet = new HashSet<>();
+
+        for (ContentPack availablePack : state.getPacks()) {
+            for (ContentPack remotePack : remotePacks) {
+                if (BuildConfig.DEBUG) {
+                    Log.i(LOG_TAG, "Available: " + availablePack.toString());
+                    Log.i(LOG_TAG, "Remote: " + remotePack.toString());
+                    Log.i(LOG_TAG, availablePack.getId() + " == " + remotePack.getId() + " -> " +
+                                   (availablePack.getId().intValue() ==
+                                    remotePack.getId().intValue()));
+                }
+
+                if (availablePack.getId().intValue() == remotePack.getId().intValue()) {
+                    if (availablePack.getVersion() >= remotePack.getVersion()) {
+                        Log.d(LOG_TAG, "{ Pack=\"" + availablePack.getName() + "\", CP_ID=" +
+                                       availablePack.getId() +
+                                       " } is already available with the same or higher version.");
+                        remotePacks.remove(remotePack);
+                        packsToSet.add(remotePack);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return packsToSet;
+    }
+
+    private Set<Question> downloadQuestions(
+            @NonNull List<ContentPack> remotePacks) throws IllegalStateException {
+        Set<Question> questionsToSet = state.getQuestions().stream()
+                                            .filter(q -> remotePacks.stream().noneMatch(p ->
+                                                    p.getId().intValue() ==
+                                                    q.getPackid().intValue()))
+                                            .collect(Collectors.toSet());
+
+        for (ContentPack newPack : remotePacks) {
+
+            try {
+                Call<QuestionResponse> questionRequest =
+                        RequesterService.getInstance().getQuestions(newPack.getId());
+                QuestionResponse qr = questionRequest.execute().body();
+
+                if (qr == null) {
+                    Log.w(LOG_TAG, "Response was null for id=" + newPack.getId());
+                    continue;
+                }
+
+                if (qr.getError()) {
+                    Log.w(LOG_TAG,
+                            "Obtaining questions failed for pack: id=" + newPack.getId() + ", " +
+                            "version=" + newPack.getVersion());
+
+                    throw new IllegalStateException(
+                            "Got an error for pack: id=" + newPack.getId() + ", version=" +
+                            newPack.getVersion());
+                }
+
+                List<Question> questions = qr.getMsg();
+                if (questions != null) questionsToSet.addAll(questions);
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "Exception occurred while getting Updates!", e);
+
+                throw new IllegalStateException(
+                        "Got an exception for pack: id=" + newPack.getId() + ", version=" +
+                        newPack.getVersion());
+            }
+        }
+
+        return questionsToSet;
+    }
+
+    private boolean isRequestSuccessful(@NonNull Call<ContentPackResponse> call,
+                                        @NonNull Response<ContentPackResponse> response) {
         if (!response.isSuccessful()) {
             call.cancel();
             Log.w(LOG_TAG, "Network-call not successful. Status-Code: " + response.code());
@@ -45,122 +161,74 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
                 Log.w(LOG_TAG, "Can't convert error-body to string", e);
             }
 
-            caller.updatesFinished(false);
-            return;
+            caller.updateFinished(false);
+            return false;
         }
 
-        ContentPackResponse cpr = response.body();
+        return true;
+    }
 
-        if (cpr == null) {
+    private boolean validResponseBody(@Nullable ContentPackResponse response) {
+        if (response == null) {
             Log.w(LOG_TAG, "Got null as message! Not correct!");
             caller.showLongSnackbar(R.string.info_update_error);
-            caller.updatesFinished(false);
-            return;
+            caller.updateFinished(false);
+            return false;
+        } else {
+            caller.setNetworkingProgress(false, GOT_VALID_RESPONSE);
+            return true;
         }
+    }
 
-        Log.i(LOG_TAG, "Received Response. Message: " + cpr.getStatus());
-
-        List<ContentPack> remotePacks = cpr.getMsg();
+    private boolean validResponseAttribute(@Nullable List<ContentPack> remotePacks) {
         if (remotePacks == null) {
             Log.w(LOG_TAG, "Got null as message! Not correct!");
             caller.showLongSnackbar(R.string.info_update_error);
-            caller.updatesFinished(false);
-            return;
+            caller.updateFinished(false);
+            return false;
         }
 
-        Log.d(LOG_TAG, remotePacks.toString());
+        return true;
+    }
 
-        AppState state = AppState.getInstance();
-
-        Set<ContentPack> availablePacks = state.getPacks();
-        Set<ContentPack> packsToSet = new HashSet<>();
-
-        for (ContentPack availablePack : availablePacks) {
-            for (ContentPack remotePack : remotePacks) {
-                if (BuildConfig.DEBUG) {
-                    Log.i(LOG_TAG, "Available: " + availablePack.toString());
-                    Log.i(LOG_TAG, "Remote: " + remotePack.toString());
-                    Log.i(LOG_TAG, availablePack.getId() + " == " + remotePack.getId() + " -> " + (availablePack.getId().intValue() == remotePack.getId().intValue()));
-                }
-
-                if (availablePack.getId().intValue() == remotePack.getId().intValue()) {
-                    if (availablePack.getVersion() >= remotePack.getVersion()) {
-                        Log.d(LOG_TAG, "{ Pack=\"" + availablePack.getName() + "\", ID=" + availablePack.getId() + " } is already available with the same or higher version.");
-                        remotePacks.remove(remotePack);
-                        packsToSet.add(remotePack);
-                    }
-                    break;
-                }
-            }
-        }
-
-        if (remotePacks.size() == 0) {
+    private boolean newPacksAvailable(int remotePackages) {
+        if (remotePackages == 0) {
             Log.i(LOG_TAG, "Update finished. No new packs found!");
             caller.setNetworkingProgressVisibility(false);
             caller.showLongSnackbar(R.string.info_up_to_date);
-            caller.updatesFinished(true);
-            return;
+            caller.updateFinished(true);
+            return false;
+        } else {
+            caller.setNetworkingProgress(false, EVALUATED_CONTENT_PACKS);
+            caller.setNetworkingInfoText(R.string.info_downloading_updates);
+            return true;
         }
+    }
 
-        Log.i(LOG_TAG, "Found " + remotePacks.size() + " new Pack(s). Getting Questions now.");
-
-        caller.setNetworkingProgress(false, 5);
-        caller.setNetworkingInfoText(R.string.info_downloading_updates);
-
-        Set<Question> questionsToSet = state.getQuestions()
-                .stream()
-                .filter(q -> remotePacks
-                        .stream()
-                        .noneMatch(p -> p.getId().intValue() == q.getPackid().intValue()))
-                .collect(Collectors.toSet());
-
-        int totalProgress = 5;
-        int progressInc = (90 / remotePacks.size());
-
-        for (ContentPack newPack : remotePacks) {
-
-            try {
-                Call<QuestionResponse> questionRequest = RequesterService.getInstance().getQuestions(newPack.getId());
-                QuestionResponse qr = questionRequest.execute().body();
-
-                if (qr == null) {
-                    Log.w(LOG_TAG, "Response for id=" + newPack.getId() + " was null");
-                    continue;
-                }
-
-                if (qr.getError()) {
-                    Log.w(LOG_TAG, "Get Questions for pack: \"" + newPack.getId() + "\" with version \"" + newPack.getVersion() + "\" failed.");
-                    break;
-                }
-
-                List<Question> questions = qr.getMsg();
-                if (questions != null) questionsToSet.addAll(questions);
-
-                totalProgress += progressInc;
-                caller.setNetworkingProgress(false, totalProgress);
-            } catch (Exception e) {
-                Log.w(LOG_TAG, "Exception occurred while getting Updates!", e);
-            }
-        }
-        packsToSet.addAll(remotePacks);
+    private void saveChanges(@NonNull Set<ContentPack> contentPacks,
+                             @NonNull Set<Question> questions) {
+        caller.setNetworkingProgress(false, DOWNLOADED_NEW_CONTENT_PACKS);
         caller.setNetworkingInfoText(R.string.info_storing_updates_to_phone);
-        state.setPacks(packsToSet);
-        state.setQuestions(questionsToSet);
+
+        state.setPacks(contentPacks);
+        state.setQuestions(questions);
 
         if (state.saveState()) {
             caller.setNetworkingProgress(false, 100);
             Log.i(LOG_TAG, "Saved AppState after Updates!");
             caller.showLongSnackbar(R.string.info_update_success);
-            caller.updatesFinished(true);
+            caller.updateFinished(true);
         } else {
             Log.w(LOG_TAG, "Could not save AppState!");
             caller.showLongSnackbar(R.string.info_update_error);
-            caller.updatesFinished(false);
+            caller.updateFinished(false);
         }
     }
 
     @Override
     public void onFailure(@NonNull Call<ContentPackResponse> call, @NonNull Throwable t) {
+        Log.i(LOG_TAG, "Running CheckUpdateResponse::onFailure()");
+
         call.cancel();
 
         if (t instanceof IOException) {
@@ -171,7 +239,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
         }
 
         caller.setNetworkingProgressVisibility(false);
-        caller.updatesFinished(false);
+        caller.updateFinished(false);
     }
 
     public interface UpdateMethods {
@@ -179,7 +247,7 @@ public class CheckUpdateResponse implements Callback<ContentPackResponse> {
 
         <T> void showLongSnackbar(@NonNull T text);
 
-        void updatesFinished(boolean result);
+        void updateFinished(boolean result);
 
         void setNetworkingProgressVisibility(boolean isVisible);
 

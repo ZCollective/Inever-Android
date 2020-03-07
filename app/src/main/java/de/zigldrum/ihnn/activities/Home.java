@@ -156,7 +156,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
      */
 
     @Override
-    public void updatesFinished(boolean success) {
+    public void updateFinished(boolean success) {
         if (success) {
             Log.d(LOG_TAG, "Updates have finished! Can continue normally.");
         } else {
