@@ -19,8 +19,6 @@ public class Settings extends AppCompatActivity implements SettingsAdapter.Setti
 
     private static final String LOG_TAG = "Settings";
 
-    private final AppState state = AppState.getInstance();
-
     private boolean stateUpdated = false;
     private boolean updateTriggered = false;
 
@@ -61,7 +59,7 @@ public class Settings extends AppCompatActivity implements SettingsAdapter.Setti
         Log.i(LOG_TAG, "Running Settings::finish()");
 
         if (stateUpdated) {
-            if (state.saveState()) {
+            if (AppState.getInstance().saveState()) {
                 Log.i(LOG_TAG, "Saving AppState after Updates!");
             } else {
                 Log.w(LOG_TAG, "Could not save AppState!");

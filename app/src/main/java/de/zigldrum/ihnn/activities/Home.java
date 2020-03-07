@@ -22,7 +22,6 @@ import de.zigldrum.ihnn.R;
 import de.zigldrum.ihnn.utils.AppState;
 import de.zigldrum.ihnn.utils.Constants.SettingsResults;
 import de.zigldrum.ihnn.utils.Utils;
-import io.paperdb.Paper;
 import retrofit2.Call;
 
 import static de.zigldrum.ihnn.utils.Constants.*;
@@ -38,26 +37,24 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     private TextView info;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(LOG_TAG, "Running Home onCreate...");
+        Log.i(LOG_TAG, "Running Home::onCreate()");
 
         info = findViewById(R.id.progress_info);
         progressBar = findViewById(R.id.main_progress);
-
-        Paper.init(this);
 
         setNetworkingProgressVisibility(true);
         setNetworkingProgress(true, 0);
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        Log.d(LOG_TAG, "Running Home onPostCreate...");
+        Log.i(LOG_TAG, "Running Home::onPostCreate()");
 
         if (AppState.getInstance().getEnableAutoUpdates()) {
             checkForUpdates();
@@ -69,7 +66,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(LOG_TAG, "Resuming Home activity!");
+        Log.i(LOG_TAG, "Running Home::onResume()");
     }
 
     @Override
@@ -110,7 +107,7 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
                 Log.d(LOG_TAG, "Got 0 from Game -> Doing nothing.");
                 break;
             case GameResults.GAME_QUESTIONS_EMPTY:
-                Log.d(LOG_TAG, "Got 1 from Game -> Displaying Error-Toast!");
+                Log.d(LOG_TAG, "Got 1 from Game -> Displaying Error-Snackbar!");
                 showLongSnackbar(R.string.info_no_questions_available);
                 break;
             default:
@@ -140,9 +137,9 @@ public class Home extends AppCompatActivity implements CheckUpdateResponse.Updat
     @Override
     public void updatesFinished(boolean success) {
         if (success) {
-            Log.d(LOG_TAG, "Updates have finished! Can continue with program as normal.");
+            Log.d(LOG_TAG, "Updates have finished! Can continue normally.");
         } else {
-            Log.d(LOG_TAG, "There was an error. Maybe handle this in the future?");
+            Log.d(LOG_TAG, "There was an error. We will handle this in the future.");
         }
     }
 

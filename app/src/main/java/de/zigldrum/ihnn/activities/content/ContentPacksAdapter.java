@@ -69,7 +69,6 @@ public class ContentPacksAdapter extends RecyclerView.Adapter<ContentPacksAdapte
 
     public interface PackSwitchCallback {
         void setStateUpdated();
-
     }
 
     static class ContentPacksViewHolder extends RecyclerView.ViewHolder {

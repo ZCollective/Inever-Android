@@ -87,7 +87,7 @@ public class AppState {
                 String packId = packMap.get(ContentPackKeys.ID);
 
                 if (packId == null || packVersion == null || packMinAge == null) {
-                    Log.w(LOG_TAG, "Malformed pack, skipping this one");
+                    Log.w(LOG_TAG, "Malformed pack, skipping this one!");
                     continue;
                 }
 
@@ -169,6 +169,7 @@ public class AppState {
 
     public void setDisabledPacks(Set<Integer> disabledPacks) {
         this.disabledPacks.clear();
+
         if (disabledPacks != null) {
             this.disabledPacks.addAll(disabledPacks);
         }
